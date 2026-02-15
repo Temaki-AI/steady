@@ -35,35 +35,39 @@ struct DateBarView: View {
                 let isFuture = date > Date()
 
                 Button {
-                    withAnimation(.easeInOut(duration: 0.15)) {
+                    withAnimation(DesignSystem.Animation.respectingMotion(.easeInOut(duration: 0.15)) ?? .easeInOut(duration: 0.15)) {
                         selectedDate = date
                     }
                 } label: {
-                    VStack(spacing: 4) {
+                    VStack(spacing: 6) {
                         Text(dayOfWeek(date))
                             .font(.caption2)
-                            .fontWeight(.medium)
-                            .foregroundStyle(isSelected ? .primary : .secondary)
+                            .fontWeight(.regular)
+                            .foregroundStyle(isSelected ? .white : .secondary.opacity(0.7))
 
                         Text(dayNumber(date))
-                            .font(.callout)
-                            .fontWeight(isSelected ? .bold : .regular)
-                            .foregroundStyle(isSelected ? .primary : (isFuture ? .tertiary : .secondary))
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .background {
-                        if isSelected {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(.ultraThinMaterial)
-                        }
-                    }
-                    .overlay {
+                            .font(.body)
+                            .fontWeight(isSelected ? .semibold : .regular)
+                            .foregroundStyle(isSelected ? .white : (isFuture ? .tertiary : .primary))
+                        
+                        // Today indicator dot
                         if isTodayDate && !isSelected {
                             Circle()
-                                .fill(.primary)
+                                .fill(DesignSystem.Colors.primaryGreen)
                                 .frame(width: 4, height: 4)
-                                .offset(y: 18)
+                        } else {
+                            Circle()
+                                .fill(Color.clear)
+                                .frame(width: 4, height: 4)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .frame(minHeight: 64) // Better tap target
+                    .background {
+                        if isSelected {
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                                .fill(DesignSystem.Colors.primaryGreen)
                         }
                     }
                 }

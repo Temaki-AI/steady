@@ -1,19 +1,27 @@
 import SwiftUI
 
-/// Subtle streak indicator: 🔥 14
+/// Polished streak indicator with warm amber flame
 struct StreakBadge: View {
     let count: Int
 
     var body: some View {
         if count > 0 {
-            HStack(spacing: 2) {
-                Text("🔥")
-                    .font(.caption2)
-                Text("\(count)")
+            HStack(spacing: 4) {
+                Image(systemName: "flame.fill")
                     .font(.caption)
+                    .foregroundStyle(DesignSystem.Colors.accentWarm)
+                
+                Text("\(count)")
+                    .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(DesignSystem.Colors.accentWarm)
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                Capsule()
+                    .fill(DesignSystem.Colors.accentWarm.opacity(0.15))
+            )
         }
     }
 }

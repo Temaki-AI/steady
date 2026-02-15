@@ -22,6 +22,18 @@ struct SteadyApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    init() {
+        // Configure tab bar appearance with warm, earthy tones
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithDefaultBackground()
+        tabBarAppearance.backgroundColor = UIColor(Color(light: "FAFAF7", dark: "1C1C1E"))
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -54,6 +66,6 @@ struct ContentView: View {
                 }
                 .tag(2)
         }
-        .tint(Color(hex: "#81C784") ?? .green) // Warm desaturated green
+        .tint(DesignSystem.Colors.primaryGreen)
     }
 }

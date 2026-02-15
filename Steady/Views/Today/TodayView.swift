@@ -67,10 +67,17 @@ struct TodayView: View {
 
                     // Empty state
                     if habits.isEmpty {
-                        VStack(spacing: 16) {
-                            Image(systemName: "leaf.fill")
-                                .font(.system(size: 48))
-                                .foregroundStyle(.secondary)
+                        VStack(spacing: 20) {
+                            Image(systemName: "leaf.circle.fill")
+                                .font(.system(size: 72))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [DesignSystem.Colors.primaryGreen, DesignSystem.Colors.darkGreen],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .padding(.bottom, 8)
 
                             Text("Add your first habit")
                                 .font(.title3)
@@ -85,11 +92,13 @@ struct TodayView: View {
                             } label: {
                                 Text("Add Habit")
                                     .fontWeight(.semibold)
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 12)
-                                    .background(.primary.opacity(0.1))
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 32)
+                                    .padding(.vertical, 14)
+                                    .background(DesignSystem.Colors.primaryGreen)
+                                    .clipShape(Capsule())
                             }
+                            .padding(.top, 8)
                         }
                         .padding(.top, 80)
                     }
@@ -189,26 +198,37 @@ struct DailyNotePreview: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 8) {
-                Text("📝")
-                    .font(.caption)
+            HStack(spacing: 12) {
+                Image(systemName: "note.text")
+                    .font(.body)
+                    .foregroundStyle(DesignSystem.Colors.accentWarm)
 
                 if let note = noteForDate, !note.text.isEmpty {
                     Text(note.text)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
                 } else {
                     Text("Add a note about today...")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
             }
-            .padding(12)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.lg)
+                    .fill(DesignSystem.Colors.accentWarm.opacity(0.1))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.lg)
+                    .stroke(DesignSystem.Colors.accentWarm.opacity(0.2), lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
     }

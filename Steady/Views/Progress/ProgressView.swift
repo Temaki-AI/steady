@@ -51,7 +51,7 @@ struct SteadyProgressView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: 32) {
                     // Summary Cards
                     HStack(spacing: 12) {
                         StatCard(title: "Today", value: "\(todayCompleted)/\(todayScheduled)", icon: "checkmark.circle")
@@ -61,9 +61,11 @@ struct SteadyProgressView: View {
                     .padding(.horizontal)
 
                     // Overall Heatmap
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("Contribution Graph")
-                            .font(.headline)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
                             .padding(.horizontal)
 
                         if isLoading {
@@ -77,7 +79,9 @@ struct SteadyProgressView: View {
                     // Per-habit stats
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Habits")
-                            .font(.headline)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
                             .padding(.horizontal)
 
                         ForEach(habits) { habit in
@@ -117,21 +121,37 @@ struct StatCard: View {
     let icon: String
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.body)
+                .foregroundStyle(DesignSystem.Colors.primaryGreen)
+            
             Text(value)
-                .font(.title3)
+                .font(.title2)
                 .fontWeight(.bold)
+                .foregroundStyle(.primary)
+            
             Text(title)
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(.vertical, 16)
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    DesignSystem.Colors.surface,
+                    DesignSystem.Colors.surface.opacity(0.5)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.lg)
+                .stroke(DesignSystem.Colors.primaryGreen.opacity(0.1), lineWidth: 1)
+        )
     }
 }
 
@@ -144,37 +164,77 @@ struct HabitStatRow: View {
     private var streak: StreakCalculator.StreakResult {
         streakCalculator.calculate(for: habit)
     }
+    
+    private var completionRate: Int {
+        let total = habit.completions.count
+        guard total > 0 else { return 0 }
+        
+        // Calculate scheduled days in the past 30 days
+        let calendar = Calendar.current
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        var scheduledDays = 0
+        
+        for dayOffset in 0..<30 {
+            if let date = calendar.date(byAdding: .day, value: dayOffset, to: thirtyDaysAgo),
+               date <= Date(),
+               habit.isScheduled(for: date),
+               habit.existedOn(date: date) {
+                scheduledDays += 1
+            }
+        }
+        
+        guard scheduledDays > 0 else { return 0 }
+        
+        let completedInPeriod = habit.completions.filter {
+            $0.date >= thirtyDaysAgo && $0.date <= Date()
+        }.count
+        
+        return min(100, Int((Double(completedInPeriod) / Double(scheduledDays)) * 100))
+    }
+    
+    private var habitColor: Color {
+        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
+    }
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: habit.icon)
-                .font(.body)
-                .foregroundStyle(Color(hex: habit.colorHex) ?? .green)
-                .frame(width: 32, height: 32)
-                .background((Color(hex: habit.colorHex) ?? .green).opacity(0.15))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Icon with circular background
+            ZStack {
+                Circle()
+                    .fill(habitColor.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: habit.icon)
+                    .font(.body)
+                    .foregroundStyle(habitColor)
+            }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(habit.name)
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+                
                 Text(habit.schedule.displayText)
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
-                HStack(spacing: 2) {
-                    Text("🔥")
-                        .font(.caption2)
+            VStack(alignment: .trailing, spacing: 4) {
+                HStack(spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .font(.caption)
+                        .foregroundStyle(DesignSystem.Colors.accentWarm)
                     Text("\(streak.current)")
                         .font(.subheadline)
                         .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
                 }
-                Text("Best: \(streak.best)")
-                    .font(.caption2)
+                
+                Text("\(completionRate)%")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
@@ -182,7 +242,12 @@ struct HabitStatRow: View {
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                .fill(DesignSystem.Colors.surface.opacity(0.5))
+        )
     }
 }
 
@@ -202,15 +267,25 @@ struct HabitDetailView: View {
     private var totalCompletions: Int {
         habit.completions.count
     }
+    
+    private var habitColor: Color {
+        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
+    }
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 32) {
                 // Header
-                VStack(spacing: 8) {
-                    Image(systemName: habit.icon)
-                        .font(.largeTitle)
-                        .foregroundStyle(Color(hex: habit.colorHex) ?? .green)
+                VStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(habitColor.opacity(0.15))
+                            .frame(width: 80, height: 80)
+                        
+                        Image(systemName: habit.icon)
+                            .font(.system(size: 40))
+                            .foregroundStyle(habitColor)
+                    }
 
                     Text(habit.name)
                         .font(.title2)
@@ -222,7 +297,7 @@ struct HabitDetailView: View {
                 }
 
                 // Stats
-                HStack(spacing: 16) {
+                HStack(spacing: 12) {
                     StatCard(title: "Current Streak", value: "\(streak.current)", icon: "flame.fill")
                     StatCard(title: "Best Streak", value: "\(streak.best)", icon: "trophy.fill")
                     StatCard(title: "Total", value: "\(totalCompletions)", icon: "checkmark.circle.fill")
@@ -230,14 +305,16 @@ struct HabitDetailView: View {
                 .padding(.horizontal)
 
                 // Heatmap
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("History")
-                        .font(.headline)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
                         .padding(.horizontal)
 
                     InteractiveHeatmapView(
                         data: heatmapData,
-                        accentColor: Color(hex: habit.colorHex) ?? .green
+                        accentColor: habitColor
                     )
                 }
             }

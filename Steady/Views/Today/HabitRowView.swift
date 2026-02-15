@@ -16,7 +16,7 @@ struct HabitRowView: View {
     }
 
     private var habitColor: Color {
-        Color(hex: habit.colorHex) ?? .green
+        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
     }
 
     var body: some View {
@@ -27,24 +27,33 @@ struct HabitRowView: View {
                 onToggle: onToggle
             )
 
-            Image(systemName: habit.icon)
-                .font(.body)
-                .foregroundStyle(isCompleted ? habitColor : .secondary)
-                .frame(width: 24)
+            // Icon with tinted circular background
+            ZStack {
+                Circle()
+                    .fill(habitColor.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: habit.icon)
+                    .font(.body)
+                    .foregroundStyle(habitColor)
+            }
 
             Text(habit.name)
                 .font(.body)
-                .foregroundStyle(isCompleted ? .secondary : .primary)
-                .strikethrough(isCompleted, color: .secondary)
+                .foregroundStyle(.primary)
                 .lineLimit(1)
 
             Spacer()
 
             StreakBadge(count: streak)
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 4)
-        .opacity(isScheduled ? 1.0 : 0.5)
+        .padding(.vertical, 14)
+        .padding(.horizontal, 16)
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                .fill(DesignSystem.Colors.surface.opacity(0.5))
+        )
+        .opacity(isCompleted ? 0.6 : (isScheduled ? 1.0 : 0.5))
         .contentShape(Rectangle())
     }
 }

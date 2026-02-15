@@ -17,6 +17,32 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                // Branded header
+                Section {
+                    VStack(spacing: 12) {
+                        Image(systemName: "leaf.circle.fill")
+                            .font(.system(size: 60))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [DesignSystem.Colors.primaryGreen, DesignSystem.Colors.darkGreen],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                        
+                        Text("Steady")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("Version 1.0")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                }
+                .listRowBackground(Color.clear)
+                
                 // General
                 Section("General") {
                     Stepper("End of day: \(endOfDayHour):00 AM", value: $endOfDayHour, in: 0...5)
@@ -33,24 +59,31 @@ struct SettingsView: View {
                     HStack {
                         Text("Accent Color")
                         Spacer()
-                        LazyVGrid(columns: Array(repeating: GridItem(.fixed(28)), count: 4), spacing: 8) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.fixed(36)), count: 4), spacing: 10) {
                             ForEach(HabitColor.allCases.prefix(8), id: \.self) { color in
                                 Circle()
                                     .fill(Color(hex: color.rawValue) ?? .gray)
-                                    .frame(width: 24, height: 24)
+                                    .frame(width: 32, height: 32)
+                                    .overlay {
+                                        Circle()
+                                            .strokeBorder(Color.primary.opacity(0.2), lineWidth: color.rawValue == accentColorHex ? 2 : 0)
+                                    }
                                     .overlay {
                                         if color.rawValue == accentColorHex {
                                             Image(systemName: "checkmark")
-                                                .font(.caption2.bold())
+                                                .font(.caption.bold())
                                                 .foregroundStyle(.white)
+                                                .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
                                         }
                                     }
+                                    .scaleEffect(color.rawValue == accentColorHex ? 1.1 : 1.0)
+                                    .animation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.6)), value: accentColorHex)
                                     .onTapGesture {
                                         accentColorHex = color.rawValue
                                     }
                             }
                         }
-                        .frame(width: 140)
+                        .frame(width: 160)
                     }
                 }
 

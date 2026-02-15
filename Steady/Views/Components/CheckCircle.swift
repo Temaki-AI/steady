@@ -7,6 +7,8 @@ struct CheckCircle: View {
     let color: Color
     let size: CGFloat
     let onToggle: () -> Void
+    
+    @State private var bounceScale: CGFloat = 1.0
 
     init(
         isCompleted: Bool,
@@ -19,32 +21,60 @@ struct CheckCircle: View {
         self.size = size
         self.onToggle = onToggle
     }
+    
+    // Desaturate color for unchecked border
+    private var desaturatedColor: Color {
+        color.opacity(0.4)
+    }
 
     var body: some View {
         Button {
             // Haptic first — feels instant
             let impact = UIImpactFeedbackGenerator(style: .medium)
             impact.impactOccurred()
+            
+            // Bounce animation on check
+            if !isCompleted {
+                withAnimation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.5))) {
+                    bounceScale = 1.1
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.7))) {
+                        bounceScale = 1.0
+                    }
+                }
+            }
+            
             onToggle()
         } label: {
             ZStack {
-                Circle()
-                    .strokeBorder(isCompleted ? color : Color.secondary.opacity(0.3), lineWidth: 2)
-                    .frame(width: size, height: size)
+                // Unchecked: dashed border, inviting
+                if !isCompleted {
+                    Circle()
+                        .stroke(
+                            style: StrokeStyle(
+                                lineWidth: 2,
+                                dash: [4, 3]
+                            )
+                        )
+                        .foregroundColor(desaturatedColor)
+                        .frame(width: size, height: size)
+                }
 
+                // Checked: solid fill with bounce
                 if isCompleted {
                     Circle()
                         .fill(color)
-                        .frame(width: size - 4, height: size - 4)
-                        .transition(.scale.combined(with: .opacity))
+                        .frame(width: size, height: size)
+                        .scaleEffect(bounceScale)
 
                     Image(systemName: "checkmark")
-                        .font(.system(size: size * 0.4, weight: .bold))
+                        .font(.system(size: size * 0.45, weight: .bold))
                         .foregroundStyle(.white)
-                        .transition(.scale)
+                        .scaleEffect(bounceScale)
                 }
             }
-            .animation(.spring(response: 0.15, dampingFraction: 0.7), value: isCompleted)
+            .animation(DesignSystem.Animation.respectingMotion(.spring(response: 0.2, dampingFraction: 0.7)), value: isCompleted)
         }
         .buttonStyle(.plain)
         .frame(width: max(44, size), height: max(44, size)) // Min 44pt tap target

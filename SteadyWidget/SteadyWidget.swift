@@ -57,31 +57,55 @@ struct SmallWidgetView: View {
         guard entry.total > 0 else { return 0 }
         return Double(entry.completed) / Double(entry.total)
     }
+    
+    private var primaryGreen: Color {
+        Color(hex: "6B9B7D") ?? .green
+    }
+    
+    private var darkGreen: Color {
+        Color(hex: "4A7A5E") ?? .green
+    }
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             ZStack {
+                // Background ring
                 Circle()
-                    .stroke(Color.secondary.opacity(0.2), lineWidth: 6)
+                    .stroke(Color(hex: "F0EDE8") ?? Color.secondary.opacity(0.2), lineWidth: 8)
+                
+                // Progress ring with gradient
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(Color(hex: "#81C784") ?? .green, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .stroke(
+                        AngularGradient(
+                            gradient: Gradient(colors: [primaryGreen, darkGreen]),
+                            center: .center,
+                            startAngle: .degrees(-90),
+                            endAngle: .degrees(270 * progress - 90)
+                        ),
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    )
                     .rotationEffect(.degrees(-90))
                     .animation(.easeInOut, value: progress)
 
-                VStack(spacing: 0) {
-                    Text("\(entry.completed)/\(entry.total)")
-                        .font(.title3)
+                VStack(spacing: 2) {
+                    Text("\(entry.completed)")
+                        .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+                    Text("of \(entry.total)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
             }
-            .frame(width: 60, height: 60)
+            .frame(width: 70, height: 70)
 
             Text("Today")
-                .font(.caption2)
+                .font(.caption)
+                .fontWeight(.medium)
                 .foregroundStyle(.secondary)
         }
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Color(hex: "FAFAF7") ?? .white, for: .widget)
     }
 }
 
@@ -89,42 +113,56 @@ struct SmallWidgetView: View {
 
 struct MediumWidgetView: View {
     let entry: SteadyEntry
+    
+    private var primaryGreen: Color {
+        Color(hex: "6B9B7D") ?? .green
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Today")
-                    .font(.headline)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
                 Spacer()
                 Text("\(entry.completed)/\(entry.total)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.body)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(primaryGreen)
             }
-            .padding(.bottom, 2)
+            .padding(.bottom, 4)
 
             ForEach(entry.habits.prefix(4)) { habit in
-                HStack(spacing: 8) {
+                HStack(spacing: 10) {
                     // Interactive check-off button
                     Button(intent: CheckOffHabitIntent(habitId: habit.id.uuidString)) {
                         Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(habit.isCompleted ? (Color(hex: habit.colorHex) ?? .green) : .secondary)
+                            .font(.body)
+                            .foregroundStyle(habit.isCompleted ? (Color(hex: habit.colorHex) ?? primaryGreen) : Color.secondary.opacity(0.4))
                     }
                     .buttonStyle(.plain)
 
                     Image(systemName: habit.icon)
-                        .font(.caption)
-                        .foregroundStyle(Color(hex: habit.colorHex) ?? .green)
+                        .font(.subheadline)
+                        .foregroundStyle(Color(hex: habit.colorHex) ?? primaryGreen)
+                        .frame(width: 20)
 
                     Text(habit.name)
-                        .font(.caption)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.primary)
                         .lineLimit(1)
 
                     Spacer()
                 }
+                .opacity(habit.isCompleted ? 0.6 : 1.0)
             }
+            
+            Spacer()
         }
         .padding()
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Color(hex: "FAFAF7") ?? .white, for: .widget)
     }
 }
 

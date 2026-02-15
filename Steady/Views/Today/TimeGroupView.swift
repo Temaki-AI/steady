@@ -41,41 +41,58 @@ struct TimeGroupView: View {
 
     var body: some View {
         if !habits.isEmpty {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 8) {
                 // Section Header
                 Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                    withAnimation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.7)) ?? .easeInOut(duration: 0.2)) {
                         toggleCollapsed()
                     }
                 } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: timeOfDay.icon)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 8) {
+                            Image(systemName: timeOfDay.icon)
+                                .font(.subheadline)
+                                .foregroundStyle(allDone ? DesignSystem.Colors.primaryGreen : .secondary)
 
-                        Text(timeOfDay.displayName)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.secondary)
+                            Text(timeOfDay.displayName)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(allDone ? DesignSystem.Colors.primaryGreen : .primary)
 
-                        Text("(\(completedCount)/\(habits.count))")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                            Spacer()
 
-                        if allDone {
-                            Image(systemName: "checkmark.circle.fill")
+                            Text("\(completedCount)/\(habits.count)")
                                 .font(.caption)
-                                .foregroundStyle(.green)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.secondary)
+
+                            Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
                         }
-
-                        Spacer()
-
-                        Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                        
+                        // Mini progress bar
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                // Background track
+                                Capsule()
+                                    .fill(DesignSystem.Colors.emptyCells)
+                                    .frame(height: 3)
+                                
+                                // Progress fill
+                                Capsule()
+                                    .fill(allDone ? DesignSystem.Colors.primaryGreen : DesignSystem.Colors.primaryGreen.opacity(0.6))
+                                    .frame(width: geometry.size.width * CGFloat(completedCount) / CGFloat(habits.count), height: 3)
+                            }
+                        }
+                        .frame(height: 3)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 10)
                     .padding(.horizontal, 16)
+                    .background(
+                        allDone ? DesignSystem.Colors.primaryGreen.opacity(0.08) : Color.clear
+                    )
+                    .cornerRadius(DesignSystem.CornerRadius.md)
                 }
                 .buttonStyle(.plain)
 
