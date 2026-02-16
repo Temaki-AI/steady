@@ -116,7 +116,7 @@ struct ScreenshotProgressView: View {
                     HStack(spacing: 12) {
                         ScreenshotStatCard(title: "Today", value: "5/8", icon: "checkmark.circle", gradient: [.green.opacity(0.15), .green.opacity(0.05)])
                         ScreenshotStatCard(title: "This Week", value: "32/48", icon: "calendar", gradient: [.blue.opacity(0.15), .blue.opacity(0.05)])
-                        ScreenshotStatCard(title: "Best Streak", value: "45", icon: "flame.fill", gradient: [DesignSystem.Colors.accentWarm!.opacity(0.15), DesignSystem.Colors.accentWarm!.opacity(0.05)])
+                        ScreenshotStatCard(title: "Best Streak", value: "45", icon: "flame.fill", gradient: [DesignSystem.Colors.accentWarm.opacity(0.15), DesignSystem.Colors.accentWarm.opacity(0.05)])
                     }
                     .padding(.horizontal)
                     
@@ -428,7 +428,7 @@ struct ScreenshotHabitRow: View {
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(DesignSystem.Colors.accentWarm != nil ? DesignSystem.Colors.accentWarm!.opacity(0.1) : Color.orange.opacity(0.1))
+                .background(DesignSystem.Colors.accentWarm.opacity(0.1))
                 .clipShape(Capsule())
             }
         }
