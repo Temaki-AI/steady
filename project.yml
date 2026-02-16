@@ -20,6 +20,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.steadyflow.habits
+        GENERATE_INFOPLIST_FILE: true
         INFOPLIST_GENERATION_MODE: GeneratedFile
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
@@ -45,6 +46,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.steadyflow.habits.widget
+        GENERATE_INFOPLIST_FILE: true
         INFOPLIST_GENERATION_MODE: GeneratedFile
         INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
