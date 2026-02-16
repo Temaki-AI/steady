@@ -57,6 +57,7 @@ struct IconPickerView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 16) {
                     ForEach(filteredIcons, id: \.self) { icon in
                         Button {
+                            HapticEngine.iconPick()
                             selectedIcon = icon
                             dismiss()
                         } label: {

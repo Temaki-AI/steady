@@ -35,6 +35,7 @@ struct DateBarView: View {
                 let isFuture = date > Date()
 
                 Button {
+                    HapticEngine.dateSelection()
                     withAnimation(DesignSystem.Animation.respectingMotion(.easeInOut(duration: 0.15)) ?? .easeInOut(duration: 0.15)) {
                         selectedDate = date
                     }

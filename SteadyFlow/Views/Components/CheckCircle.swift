@@ -30,8 +30,11 @@ struct CheckCircle: View {
     var body: some View {
         Button {
             // Haptic first — feels instant
-            let impact = UIImpactFeedbackGenerator(style: .medium)
-            impact.impactOccurred()
+            if !isCompleted {
+                HapticEngine.habitCompleted()
+            } else {
+                HapticEngine.habitUnchecked()
+            }
             
             // Bounce animation on check
             if !isCompleted {

@@ -75,7 +75,7 @@ struct HabitFormView: View {
                                             .foregroundStyle(.white)
                                     }
                                 }
-                                .onTapGesture { color = c }
+                                .onTapGesture { HapticEngine.colorPick(); color = c }
                         }
                     }
                     .padding(.vertical, 4)
@@ -220,6 +220,7 @@ struct HabitFormView: View {
             )
         }
 
+        HapticEngine.saved()
         dismiss()
     }
 

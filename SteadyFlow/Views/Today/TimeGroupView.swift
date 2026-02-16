@@ -44,6 +44,7 @@ struct TimeGroupView: View {
             VStack(alignment: .leading, spacing: 8) {
                 // Section Header
                 Button {
+                    HapticEngine.toggleGroup()
                     withAnimation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.7)) ?? .easeInOut(duration: 0.2)) {
                         toggleCollapsed()
                     }

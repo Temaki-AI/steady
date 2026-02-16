@@ -24,6 +24,9 @@ struct SteadyFlowApp: App {
     }()
     
     init() {
+        // Pre-warm haptic engines for zero-lag first feedback
+        HapticEngine.prepare()
+        
         // Configure tab bar appearance with warm, earthy tones
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithDefaultBackground()
@@ -65,6 +68,9 @@ struct ContentView: View {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
                 .tag(2)
+        }
+        .onChange(of: selectedTab) { _, _ in
+            HapticEngine.tabTap()
         }
         .tint(DesignSystem.Colors.primaryGreen)
     }

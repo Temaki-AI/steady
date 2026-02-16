@@ -162,10 +162,22 @@ struct TodayView: View {
 
     private func toggleHabit(_ habit: Habit) {
         let service = HabitService(modelContext: modelContext)
-        service.toggleCompletion(for: habit, on: selectedDate)
+        let wasCompleted = service.toggleCompletion(for: habit, on: selectedDate)
         // Recalculate streak for this habit
         let result = streakCalculator.calculate(for: habit)
         streaks[habit.id] = result.current
+        
+        // Celebrate when ALL habits for the day are done
+        if wasCompleted {
+            let dateString = Habit.dateString(from: selectedDate)
+            let activeHabits = service.activeHabits()
+            let allDone = activeHabits.allSatisfy { h in
+                h.safeCompletions.contains { $0.date == dateString }
+            }
+            if allDone && !activeHabits.isEmpty {
+                HapticEngine.allComplete()
+            }
+        }
     }
 
     private func recalculateStreaks() {
