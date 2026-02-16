@@ -1,8 +1,8 @@
 //
 //  DesignSystem.swift
-//  Steady
+//  Steady Flow
 //
-//  Central design tokens for the Steady app
+//  Central design tokens for the Steady Flow app
 //
 
 import SwiftUI

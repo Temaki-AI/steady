@@ -5,16 +5,16 @@ import AppIntents
 
 // MARK: - Widget Provider
 
-struct SteadyTimelineProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SteadyEntry {
-        SteadyEntry(date: Date(), completed: 5, total: 8, habits: [])
+struct SteadyFlowTimelineProvider: TimelineProvider {
+    func placeholder(in context: Context) -> SteadyFlowEntry {
+        SteadyFlowEntry(date: Date(), completed: 5, total: 8, habits: [])
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SteadyEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (SteadyFlowEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SteadyEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SteadyFlowEntry>) -> Void) {
         // Read from shared SwiftData store
         let entry = loadEntry()
 
@@ -24,16 +24,16 @@ struct SteadyTimelineProvider: TimelineProvider {
         completion(timeline)
     }
 
-    private func loadEntry() -> SteadyEntry {
+    private func loadEntry() -> SteadyFlowEntry {
         // In production: read from shared App Group SwiftData store
         // For now, return placeholder
-        SteadyEntry(date: Date(), completed: 0, total: 0, habits: [])
+        SteadyFlowEntry(date: Date(), completed: 0, total: 0, habits: [])
     }
 }
 
 // MARK: - Entry
 
-struct SteadyEntry: TimelineEntry {
+struct SteadyFlowEntry: TimelineEntry {
     let date: Date
     let completed: Int
     let total: Int
@@ -51,7 +51,7 @@ struct WidgetHabit: Identifiable {
 // MARK: - Small Widget (Ring Chart)
 
 struct SmallWidgetView: View {
-    let entry: SteadyEntry
+    let entry: SteadyFlowEntry
 
     private var progress: Double {
         guard entry.total > 0 else { return 0 }
@@ -59,11 +59,11 @@ struct SmallWidgetView: View {
     }
     
     private var primaryGreen: Color {
-        Color(hex: "6B9B7D") ?? .green
+        Color(hex: "6B9B7D")
     }
     
     private var darkGreen: Color {
-        Color(hex: "4A7A5E") ?? .green
+        Color(hex: "4A7A5E")
     }
 
     var body: some View {
@@ -71,7 +71,7 @@ struct SmallWidgetView: View {
             ZStack {
                 // Background ring
                 Circle()
-                    .stroke(Color(hex: "F0EDE8") ?? Color.secondary.opacity(0.2), lineWidth: 8)
+                    .stroke(Color(hex: "F0EDE8"), lineWidth: 8)
                 
                 // Progress ring with gradient
                 Circle()
@@ -105,17 +105,17 @@ struct SmallWidgetView: View {
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
         }
-        .containerBackground(Color(hex: "FAFAF7") ?? .white, for: .widget)
+        .containerBackground(Color(hex: "FAFAF7"), for: .widget)
     }
 }
 
 // MARK: - Medium Widget (Habit List)
 
 struct MediumWidgetView: View {
-    let entry: SteadyEntry
+    let entry: SteadyFlowEntry
     
     private var primaryGreen: Color {
-        Color(hex: "6B9B7D") ?? .green
+        Color(hex: "6B9B7D")
     }
 
     var body: some View {
@@ -139,13 +139,13 @@ struct MediumWidgetView: View {
                     Button(intent: CheckOffHabitIntent(habitId: habit.id.uuidString)) {
                         Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
                             .font(.body)
-                            .foregroundStyle(habit.isCompleted ? (Color(hex: habit.colorHex) ?? primaryGreen) : Color.secondary.opacity(0.4))
+                            .foregroundStyle(habit.isCompleted ? (Color(hex: habit.colorHex)) : Color.secondary.opacity(0.4))
                     }
                     .buttonStyle(.plain)
 
                     Image(systemName: habit.icon)
                         .font(.subheadline)
-                        .foregroundStyle(Color(hex: habit.colorHex) ?? primaryGreen)
+                        .foregroundStyle(Color(hex: habit.colorHex))
                         .frame(width: 20)
 
                     Text(habit.name)
@@ -162,7 +162,7 @@ struct MediumWidgetView: View {
             Spacer()
         }
         .padding()
-        .containerBackground(Color(hex: "FAFAF7") ?? .white, for: .widget)
+        .containerBackground(Color(hex: "FAFAF7"), for: .widget)
     }
 }
 
@@ -193,17 +193,17 @@ struct CheckOffHabitIntent: AppIntent {
 
 // MARK: - Widget Bundle
 
-struct SteadyWidgetBundle: WidgetBundle {
+struct SteadyFlowWidgetBundle: WidgetBundle {
     var body: some Widget {
-        SteadyTodayWidget()
+        SteadyFlowTodayWidget()
     }
 }
 
-struct SteadyTodayWidget: Widget {
-    let kind: String = "SteadyTodayWidget"
+struct SteadyFlowTodayWidget: Widget {
+    let kind: String = "SteadyFlowTodayWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: SteadyTimelineProvider()) { entry in
+        StaticConfiguration(kind: kind, provider: SteadyFlowTimelineProvider()) { entry in
             switch entry.date { // Use widget family
             default:
                 MediumWidgetView(entry: entry)

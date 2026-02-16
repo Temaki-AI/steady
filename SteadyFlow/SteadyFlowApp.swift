@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct SteadyApp: App {
+struct SteadyFlowApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Habit.self,
@@ -54,7 +54,7 @@ struct ContentView: View {
                 }
                 .tag(0)
 
-            SteadyProgressView()
+            SteadyFlowProgressView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.bar.fill")
                 }

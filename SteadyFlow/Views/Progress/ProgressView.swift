@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// Progress tab — heatmap, stats, per-habit details
-struct SteadyProgressView: View {
+struct SteadyFlowProgressView: View {
     @Query(filter: #Predicate<Habit> { !$0.isArchived }, sort: \Habit.position)
     private var habits: [Habit]
 
@@ -193,7 +193,7 @@ struct HabitStatRow: View {
     }
     
     private var habitColor: Color {
-        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
+        Color(hex: habit.colorHex)
     }
 
     var body: some View {
@@ -269,7 +269,7 @@ struct HabitDetailView: View {
     }
     
     private var habitColor: Color {
-        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
+        Color(hex: habit.colorHex)
     }
 
     var body: some View {

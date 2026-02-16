@@ -30,7 +30,7 @@ struct SettingsView: View {
                                 )
                             )
                         
-                        Text("Steady")
+                        Text("Steady Flow")
                             .font(.title2)
                             .fontWeight(.bold)
                         
@@ -62,7 +62,7 @@ struct SettingsView: View {
                         LazyVGrid(columns: Array(repeating: GridItem(.fixed(36)), count: 4), spacing: 10) {
                             ForEach(HabitColor.allCases.prefix(8), id: \.self) { color in
                                 Circle()
-                                    .fill(Color(hex: color.rawValue) ?? .gray)
+                                    .fill(Color(hex: color.rawValue))
                                     .frame(width: 32, height: 32)
                                     .overlay {
                                         Circle()
@@ -130,7 +130,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Link(destination: URL(string: "https://github.com/steady-app/steady")!) {
+                    Link(destination: URL(string: "https://github.com/steadyflow-app/steady-flow")!) {
                         Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 }
@@ -220,7 +220,7 @@ struct ArchivedHabitsView: View {
                 ForEach(archivedHabits) { habit in
                     HStack {
                         Image(systemName: habit.icon)
-                            .foregroundStyle(Color(hex: habit.colorHex) ?? .gray)
+                            .foregroundStyle(Color(hex: habit.colorHex))
                         Text(habit.name)
                         Spacer()
                         Button("Restore") {

@@ -51,9 +51,9 @@ struct HabitFormView: View {
                             HStack {
                                 Image(systemName: icon)
                                     .font(.title2)
-                                    .foregroundStyle(Color(hex: color.rawValue) ?? .green)
+                                    .foregroundStyle(Color(hex: color.rawValue))
                                     .frame(width: 44, height: 44)
-                                    .background(Color(hex: color.rawValue)?.opacity(0.15) ?? .clear)
+                                    .background(Color(hex: color.rawValue).opacity(0.15))
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
                                 Text("Choose Icon")
@@ -66,7 +66,7 @@ struct HabitFormView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(HabitColor.allCases, id: \.self) { c in
                             Circle()
-                                .fill(Color(hex: c.rawValue) ?? .gray)
+                                .fill(Color(hex: c.rawValue))
                                 .frame(width: 32, height: 32)
                                 .overlay {
                                     if c == color {
@@ -99,7 +99,7 @@ struct HabitFormView: View {
                                 Text(String(day.shortName.prefix(1)))
                                     .font(.caption.bold())
                                     .frame(width: 36, height: 36)
-                                    .background(isSelected ? (Color(hex: color.rawValue) ?? .blue) : Color.secondary.opacity(0.15))
+                                    .background(isSelected ? (Color(hex: color.rawValue)) : Color.secondary.opacity(0.15))
                                     .foregroundStyle(isSelected ? .white : .primary)
                                     .clipShape(Circle())
                                     .onTapGesture {

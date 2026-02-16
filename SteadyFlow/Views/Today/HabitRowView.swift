@@ -16,7 +16,7 @@ struct HabitRowView: View {
     }
 
     private var habitColor: Color {
-        Color(hex: habit.colorHex) ?? DesignSystem.Colors.primaryGreen
+        Color(hex: habit.colorHex)
     }
 
     var body: some View {
@@ -58,20 +58,4 @@ struct HabitRowView: View {
     }
 }
 
-// MARK: - Color from Hex
-
-extension Color {
-    init?(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.hasPrefix("#") ? String(hexSanitized.dropFirst()) : hexSanitized
-
-        guard hexSanitized.count == 6,
-              let rgb = UInt64(hexSanitized, radix: 16) else { return nil }
-
-        self.init(
-            red: Double((rgb & 0xFF0000) >> 16) / 255.0,
-            green: Double((rgb & 0x00FF00) >> 8) / 255.0,
-            blue: Double(rgb & 0x0000FF) / 255.0
-        )
-    }
-}
+// Color(hex:) is defined in DesignSystem.swift
