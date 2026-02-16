@@ -1,0 +1,57 @@
+name: SteadyFlow
+options:
+  bundleIdPrefix: com.steadyflow
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: ""  # Set your team ID here or in Xcode
+
+targets:
+  SteadyFlow:
+    type: application
+    platform: iOS
+    sources:
+      - SteadyFlow
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.steadyflow.habits
+        INFOPLIST_GENERATION_MODE: GeneratedFile
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+        INFOPLIST_KEY_CFBundleDisplayName: "Steady Flow"
+        INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.healthcare-fitness"
+    entitlements:
+      path: SteadyFlow/SteadyFlow.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.steadyflow.habits
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.security.application-groups:
+          - group.com.steadyflow.habits
+
+  SteadyFlowWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - SteadyFlowWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.steadyflow.habits.widget
+        INFOPLIST_GENERATION_MODE: GeneratedFile
+        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: SteadyFlowWidget/SteadyFlowWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.steadyflow.habits
+    dependencies:
+      - target: SteadyFlow
+        embed: false
