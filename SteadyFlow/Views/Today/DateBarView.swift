@@ -48,7 +48,7 @@ struct DateBarView: View {
                         Text(dayNumber(date))
                             .font(.body)
                             .fontWeight(isSelected ? .semibold : .regular)
-                            .foregroundStyle(isSelected ? .white : (isFuture ? .tertiary : .primary))
+                            .foregroundStyle(isSelected ? .white : (isFuture ? Color.primary.opacity(0.3) : .primary))
                         
                         // Today indicator dot
                         if isTodayDate && !isSelected {
