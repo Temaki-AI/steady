@@ -7,6 +7,8 @@ struct TimeGroupView: View {
     let date: Date
     let streaks: [UUID: Int]
     let onToggle: (Habit) -> Void
+    let onEdit: (Habit) -> Void
+    let onArchive: (Habit) -> Void
 
     @AppStorage("collapsed_\(TimeOfDay.morning.rawValue)") private var collapsedMorning = false
     @AppStorage("collapsed_\(TimeOfDay.afternoon.rawValue)") private var collapsedAfternoon = false
@@ -100,11 +102,13 @@ struct TimeGroupView: View {
                 // Habit List
                 if !isCollapsed {
                     ForEach(habits.sorted(by: { $0.position < $1.position })) { habit in
-                        HabitRowView(
+                        SwipeableHabitRow(
                             habit: habit,
                             date: date,
                             streak: streaks[habit.id] ?? 0,
-                            onToggle: { onToggle(habit) }
+                            onToggle: { onToggle(habit) },
+                            onEdit: { onEdit(habit) },
+                            onArchive: { onArchive(habit) }
                         )
                         .padding(.horizontal, 16)
                     }

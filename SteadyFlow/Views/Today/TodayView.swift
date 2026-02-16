@@ -10,6 +10,8 @@ struct TodayView: View {
     @State private var selectedDate = Date()
     @State private var showCreateSheet = false
     @State private var showJournalSheet = false
+    @State private var showEditSheet = false
+    @State private var habitToEdit: Habit?
     @State private var streaks: [UUID: Int] = [:]
 
     private let streakCalculator = StreakCalculator()
@@ -61,6 +63,13 @@ struct TodayView: View {
                             streaks: streaks,
                             onToggle: { habit in
                                 toggleHabit(habit)
+                            },
+                            onEdit: { habit in
+                                habitToEdit = habit
+                                showEditSheet = true
+                            },
+                            onArchive: { habit in
+                                archiveHabit(habit)
                             }
                         )
                     }
@@ -136,6 +145,11 @@ struct TodayView: View {
             .sheet(isPresented: $showCreateSheet) {
                 HabitFormView()
             }
+            .sheet(isPresented: $showEditSheet) {
+                if let habit = habitToEdit {
+                    HabitFormView(editingHabit: habit)
+                }
+            }
             .sheet(isPresented: $showJournalSheet) {
                 DailyNoteSheet(date: selectedDate)
             }
@@ -177,6 +191,13 @@ struct TodayView: View {
             if allDone && !activeHabits.isEmpty {
                 HapticEngine.allComplete()
             }
+        }
+    }
+
+    private func archiveHabit(_ habit: Habit) {
+        let service = HabitService(modelContext: modelContext)
+        withAnimation(DesignSystem.Animation.respectingMotion(.easeInOut(duration: 0.3)) ?? .easeInOut(duration: 0.3)) {
+            service.archiveHabit(habit)
         }
     }
 
