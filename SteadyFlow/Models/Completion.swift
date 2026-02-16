@@ -3,10 +3,10 @@ import SwiftData
 
 @Model
 final class Completion {
-    var id: UUID
-    var date: String                    // "2026-02-15" (local calendar date)
-    var completedAt: Date               // full timestamp
-    var timezone: String                // "America/New_York"
+    var id: UUID = UUID()
+    var date: String = ""
+    var completedAt: Date = Date()
+    var timezone: String = ""
     var habit: Habit?
 
     init(habit: Habit, date: Date = Date()) {

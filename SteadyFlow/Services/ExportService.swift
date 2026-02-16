@@ -52,7 +52,7 @@ struct ExportService {
                 position: habit.position,
                 isArchived: habit.isArchived,
                 createdAt: formatter.string(from: habit.createdAt),
-                completions: habit.completions.map { c in
+                completions: habit.safeCompletions.map { c in
                     ExportCompletion(
                         date: c.date,
                         completedAt: formatter.string(from: c.completedAt),
@@ -85,7 +85,7 @@ struct ExportService {
         // Collect all dates
         var allDates = Set<String>()
         for habit in habits {
-            for completion in habit.completions {
+            for completion in habit.safeCompletions {
                 allDates.insert(completion.date)
             }
         }
@@ -97,7 +97,7 @@ struct ExportService {
 
         for dateStr in allDates.sorted() {
             for habit in habits {
-                let completed = habit.completions.contains { $0.date == dateStr }
+                let completed = habit.safeCompletions.contains { $0.date == dateStr }
                 let note = notesByDate[dateStr] ?? ""
                 let escapedName = habit.name.replacingOccurrences(of: ",", with: ";")
                 let escapedNote = note.replacingOccurrences(of: ",", with: ";")

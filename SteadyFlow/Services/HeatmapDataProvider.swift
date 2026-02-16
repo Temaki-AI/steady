@@ -35,7 +35,7 @@ struct HeatmapDataProvider {
 
                 if habit.isScheduled(for: date) {
                     scheduled += 1
-                    if habit.completions.contains(where: { $0.date == dateString }) {
+                    if habit.safeCompletions.contains(where: { $0.date == dateString }) {
                         completed += 1
                     }
                 }
@@ -88,7 +88,7 @@ struct HeatmapDataProvider {
             }
 
             let isScheduled = habit.isScheduled(for: date)
-            let isCompleted = habit.completions.contains(where: { $0.date == dateString })
+            let isCompleted = habit.safeCompletions.contains(where: { $0.date == dateString })
 
             let intensity: Int
             if !isScheduled {

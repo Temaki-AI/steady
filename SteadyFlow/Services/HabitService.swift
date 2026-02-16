@@ -85,7 +85,7 @@ final class HabitService {
     func toggleCompletion(for habit: Habit, on date: Date = Date()) -> Bool {
         let dateString = Habit.dateString(from: date)
 
-        if let existing = habit.completions.first(where: { $0.date == dateString }) {
+        if let existing = habit.safeCompletions.first(where: { $0.date == dateString }) {
             // Uncomplete
             modelContext.delete(existing)
             try? modelContext.save()

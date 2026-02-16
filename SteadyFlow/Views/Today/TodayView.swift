@@ -142,7 +142,7 @@ struct TodayView: View {
             .onAppear {
                 recalculateStreaks()
             }
-            .onChange(of: habits.flatMap(\.completions).count) {
+            .onChange(of: habits.flatMap(\.safeCompletions).count) {
                 recalculateStreaks()
             }
         }

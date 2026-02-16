@@ -19,20 +19,20 @@ enum HabitColor: String, Codable, CaseIterable {
 
 @Model
 final class Habit {
-    var id: UUID
-    var name: String                    // max 50 chars
-    var icon: String                    // SF Symbol name
-    var colorHex: String                // hex from HabitColor palette
-    var scheduleData: Data              // encoded HabitSchedule
-    var timeOfDayRaw: String            // TimeOfDay rawValue
-    var position: Int                   // manual sort order within group
-    var remindersData: Data             // encoded [ReminderTime]
-    var isArchived: Bool
-    var createdAt: Date
-    var updatedAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var icon: String = "circle.fill"
+    var colorHex: String = "#81C784"
+    var scheduleData: Data = Data()
+    var timeOfDayRaw: String = "anytime"
+    var position: Int = 0
+    var remindersData: Data = Data()
+    var isArchived: Bool = false
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
 
     @Relationship(deleteRule: .cascade, inverse: \Completion.habit)
-    var completions: [Completion] = []
+    var completions: [Completion]? = []
 
     init(
         name: String,
@@ -90,22 +90,27 @@ final class Habit {
         }
     }
 
+    /// The completions array, safely unwrapped
+    var safeCompletions: [Completion] {
+        completions ?? []
+    }
+
     /// Check if this habit is scheduled for a given date
     func isScheduled(for date: Date) -> Bool {
-        let completionDates = completions.map { $0.calendarDate }
+        let completionDates = safeCompletions.map { $0.calendarDate }
         return schedule.isScheduled(for: date, createdAt: createdAt, completions: completionDates)
     }
 
     /// Check if this habit is completed for a given date
     func isCompleted(for date: Date) -> Bool {
         let dateString = Self.dateString(from: date)
-        return completions.contains { $0.date == dateString }
+        return safeCompletions.contains { $0.date == dateString }
     }
 
     /// Get completion for a specific date
     func completion(for date: Date) -> Completion? {
         let dateString = Self.dateString(from: date)
-        return completions.first { $0.date == dateString }
+        return safeCompletions.first { $0.date == dateString }
     }
 
     /// Whether the habit existed on a given date

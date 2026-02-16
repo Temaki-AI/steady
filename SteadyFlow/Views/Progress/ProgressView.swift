@@ -166,7 +166,7 @@ struct HabitStatRow: View {
     }
     
     private var completionRate: Int {
-        let total = habit.completions.count
+        let total = habit.safeCompletions.count
         guard total > 0 else { return 0 }
         
         // Calculate scheduled days in the past 30 days
@@ -189,7 +189,7 @@ struct HabitStatRow: View {
         fmt.dateFormat = "yyyy-MM-dd"
         let startStr = fmt.string(from: thirtyDaysAgo)
         let endStr = fmt.string(from: Date())
-        let completedInPeriod = habit.completions.filter {
+        let completedInPeriod = habit.safeCompletions.filter {
             $0.date >= startStr && $0.date <= endStr
         }.count
         
@@ -269,7 +269,7 @@ struct HabitDetailView: View {
     }
 
     private var totalCompletions: Int {
-        habit.completions.count
+        habit.safeCompletions.count
     }
     
     private var habitColor: Color {

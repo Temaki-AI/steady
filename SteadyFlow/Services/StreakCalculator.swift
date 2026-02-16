@@ -18,7 +18,7 @@ struct StreakCalculator {
     /// - Best streak is the highest streak ever achieved.
     func calculate(for habit: Habit, asOf today: Date = Date()) -> StreakResult {
         let calendar = Calendar.current
-        let completionDates = Set(habit.completions.map(\.date)) // "yyyy-MM-dd" strings
+        let completionDates = Set(habit.safeCompletions.map(\.date)) // "yyyy-MM-dd" strings
         let todayString = Habit.dateString(from: today)
 
         // Determine starting point

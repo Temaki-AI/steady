@@ -3,10 +3,10 @@ import SwiftData
 
 @Model
 final class DailyNote {
-    var id: UUID
-    var date: String                    // "2026-02-15"
-    var text: String                    // max 500 chars
-    var updatedAt: Date
+    var id: UUID = UUID()
+    var date: String = ""
+    var text: String = ""
+    var updatedAt: Date = Date()
 
     init(date: Date, text: String = "") {
         self.id = UUID()
