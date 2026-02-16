@@ -185,8 +185,12 @@ struct HabitStatRow: View {
         
         guard scheduledDays > 0 else { return 0 }
         
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        let startStr = fmt.string(from: thirtyDaysAgo)
+        let endStr = fmt.string(from: Date())
         let completedInPeriod = habit.completions.filter {
-            $0.date >= thirtyDaysAgo && $0.date <= Date()
+            $0.date >= startStr && $0.date <= endStr
         }.count
         
         return min(100, Int((Double(completedInPeriod) / Double(scheduledDays)) * 100))
