@@ -9,6 +9,7 @@ struct TimeGroupView: View {
     let onToggle: (Habit) -> Void
     let onEdit: (Habit) -> Void
     let onArchive: (Habit) -> Void
+    @Binding var activeSwipeID: UUID?
 
     @AppStorage("collapsed_\(TimeOfDay.morning.rawValue)") private var collapsedMorning = false
     @AppStorage("collapsed_\(TimeOfDay.afternoon.rawValue)") private var collapsedAfternoon = false
@@ -108,7 +109,8 @@ struct TimeGroupView: View {
                             streak: streaks[habit.id] ?? 0,
                             onToggle: { onToggle(habit) },
                             onEdit: { onEdit(habit) },
-                            onArchive: { onArchive(habit) }
+                            onArchive: { onArchive(habit) },
+                            activeSwipeID: $activeSwipeID
                         )
                         .padding(.horizontal, 16)
                     }

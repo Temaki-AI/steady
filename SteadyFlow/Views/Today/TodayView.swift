@@ -12,6 +12,7 @@ struct TodayView: View {
     @State private var showJournalSheet = false
     @State private var showEditSheet = false
     @State private var habitToEdit: Habit?
+    @State private var activeSwipeID: UUID?
     @State private var streaks: [UUID: Int] = [:]
 
     private let streakCalculator = StreakCalculator()
@@ -62,6 +63,7 @@ struct TodayView: View {
                             date: selectedDate,
                             streaks: streaks,
                             onToggle: { habit in
+                                activeSwipeID = nil
                                 toggleHabit(habit)
                             },
                             onEdit: { habit in
@@ -70,7 +72,8 @@ struct TodayView: View {
                             },
                             onArchive: { habit in
                                 archiveHabit(habit)
-                            }
+                            },
+                            activeSwipeID: $activeSwipeID
                         )
                     }
 
