@@ -10,7 +10,6 @@ struct TodayView: View {
     @State private var selectedDate = Date()
     @State private var showCreateSheet = false
     @State private var showJournalSheet = false
-    @State private var showEditSheet = false
     @State private var habitToEdit: Habit?
     @State private var activeSwipeID: UUID?
     @State private var streaks: [UUID: Int] = [:]
@@ -68,7 +67,6 @@ struct TodayView: View {
                             },
                             onEdit: { habit in
                                 habitToEdit = habit
-                                showEditSheet = true
                             },
                             onArchive: { habit in
                                 archiveHabit(habit)
@@ -148,10 +146,8 @@ struct TodayView: View {
             .sheet(isPresented: $showCreateSheet) {
                 HabitFormView()
             }
-            .sheet(isPresented: $showEditSheet) {
-                if let habit = habitToEdit {
-                    HabitFormView(editingHabit: habit)
-                }
+            .sheet(item: $habitToEdit) { habit in
+                HabitFormView(editingHabit: habit)
             }
             .sheet(isPresented: $showJournalSheet) {
                 DailyNoteSheet(date: selectedDate)
