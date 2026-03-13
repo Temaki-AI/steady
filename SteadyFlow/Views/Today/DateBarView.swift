@@ -3,7 +3,13 @@ import SwiftUI
 /// Horizontal scrollable week date picker
 struct DateBarView: View {
     @Binding var selectedDate: Date
-    private let calendar = Calendar.current
+    @AppStorage("firstDayOfWeek") private var firstDayOfWeek = 1
+
+    private var calendar: Calendar {
+        var cal = Calendar.current
+        cal.firstWeekday = firstDayOfWeek
+        return cal
+    }
 
     private var weekDates: [Date] {
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: selectedDate)?.start ?? selectedDate
@@ -18,15 +24,14 @@ struct DateBarView: View {
         HStack(spacing: 0) {
             // Previous week
             Button {
-                withAnimation {
-                    selectedDate = calendar.date(byAdding: .weekOfYear, value: -1, to: selectedDate) ?? selectedDate
-                }
+                goToPreviousWeek()
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 32, height: 44)
             }
+            .buttonStyle(.borderless)
 
             // Week days
             ForEach(weekDates, id: \.self) { date in
@@ -50,7 +55,7 @@ struct DateBarView: View {
                             .font(.body)
                             .fontWeight(isSelected ? .semibold : .regular)
                             .foregroundStyle(isSelected ? .white : (isFuture ? Color.primary.opacity(0.3) : .primary))
-                        
+
                         // Today indicator dot
                         if isTodayDate && !isSelected {
                             Circle()
@@ -72,28 +77,57 @@ struct DateBarView: View {
                         }
                     }
                 }
+                .buttonStyle(.borderless)
                 .disabled(isFuture)
             }
 
             // Next week
             Button {
-                withAnimation {
-                    selectedDate = calendar.date(byAdding: .weekOfYear, value: 1, to: selectedDate) ?? selectedDate
-                }
+                goToNextWeek()
             } label: {
                 Image(systemName: "chevron.right")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 32, height: 44)
             }
-            // Disable forward past current week
-            .disabled(!calendar.isDate(
-                calendar.date(byAdding: .weekOfYear, value: 1, to: selectedDate) ?? selectedDate,
-                equalTo: Date(),
-                toGranularity: .weekOfYear
-            ) && (calendar.date(byAdding: .weekOfYear, value: 1, to: selectedDate) ?? selectedDate) > Date())
+            .buttonStyle(.borderless)
+            .disabled(!canGoForward)
         }
         .padding(.horizontal, 8)
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 30)
+                .onEnded { value in
+                    if value.translation.width > 50 {
+                        // Swipe right → previous week
+                        goToPreviousWeek()
+                    } else if value.translation.width < -50 && canGoForward {
+                        // Swipe left → next week
+                        goToNextWeek()
+                    }
+                }
+        )
+    }
+
+    private var canGoForward: Bool {
+        let nextWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: selectedDate) ?? selectedDate
+        // Allow if next week contains today or is in the past
+        return calendar.isDate(nextWeek, equalTo: Date(), toGranularity: .weekOfYear) || nextWeek <= Date()
+    }
+
+    private func goToPreviousWeek() {
+        HapticEngine.dateSelection()
+        withAnimation {
+            selectedDate = calendar.date(byAdding: .weekOfYear, value: -1, to: selectedDate) ?? selectedDate
+        }
+    }
+
+    private func goToNextWeek() {
+        guard canGoForward else { return }
+        HapticEngine.dateSelection()
+        withAnimation {
+            selectedDate = calendar.date(byAdding: .weekOfYear, value: 1, to: selectedDate) ?? selectedDate
+        }
     }
 
     private func dayOfWeek(_ date: Date) -> String {

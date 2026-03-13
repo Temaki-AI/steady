@@ -1,11 +1,12 @@
 //
 //  ScreenshotPreviews.swift
-//  Steady Flow
+//  Steady Habits
 //
 //  Demo-ready preview screens for App Store screenshots.
 //  These use static data — no SwiftData dependency.
 //
 
+#if DEBUG
 import SwiftUI
 
 // MARK: - 1. Today View (Light Mode) — Morning habits partially done
@@ -735,3 +736,4 @@ struct ScreenshotMediumWidget: View {
     ScreenshotProgressView()
         .preferredColorScheme(.light)
 }
+#endif

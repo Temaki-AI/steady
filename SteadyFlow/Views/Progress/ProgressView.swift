@@ -6,10 +6,6 @@ struct SteadyFlowProgressView: View {
     @Query(filter: #Predicate<Habit> { !$0.isArchived }, sort: \Habit.position)
     private var habits: [Habit]
 
-    @State private var heatmapData: [HeatmapDataProvider.DayData] = []
-    @State private var isLoading = true
-
-    private let heatmapProvider = HeatmapDataProvider()
     private let streakCalculator = StreakCalculator()
 
     private var todayCompleted: Int {
@@ -51,7 +47,17 @@ struct SteadyFlowProgressView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(spacing: 24) {
+                    // Title
+                    HStack {
+                        Text("Progress")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 4)
+
                     // Summary Cards
                     HStack(spacing: 12) {
                         StatCard(title: "Today", value: "\(todayCompleted)/\(todayScheduled)", icon: "checkmark.circle")
@@ -68,12 +74,7 @@ struct SteadyFlowProgressView: View {
                             .foregroundStyle(.primary)
                             .padding(.horizontal)
 
-                        if isLoading {
-                            ProgressView()
-                                .frame(height: 100)
-                        } else {
-                            InteractiveHeatmapView(data: heatmapData)
-                        }
+                        InteractiveHeatmapView(habits: habits)
                     }
 
                     // Per-habit stats
@@ -95,20 +96,9 @@ struct SteadyFlowProgressView: View {
                     }
                     .padding(.horizontal)
                 }
-                .padding(.vertical)
+                .padding(.bottom)
             }
-            .navigationTitle("Progress")
-            .task {
-                await loadHeatmap()
-            }
-        }
-    }
-
-    private func loadHeatmap() async {
-        let data = heatmapProvider.generateHeatmap(habits: habits)
-        await MainActor.run {
-            heatmapData = data
-            isLoading = false
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
@@ -260,8 +250,6 @@ struct HabitStatRow: View {
 struct HabitDetailView: View {
     let habit: Habit
 
-    @State private var heatmapData: [HeatmapDataProvider.DayData] = []
-    private let heatmapProvider = HeatmapDataProvider()
     private let streakCalculator = StreakCalculator()
 
     private var streak: StreakCalculator.StreakResult {
@@ -317,8 +305,9 @@ struct HabitDetailView: View {
                         .padding(.horizontal)
 
                     InteractiveHeatmapView(
-                        data: heatmapData,
-                        accentColor: habitColor
+                        habits: [],
+                        accentColor: habitColor,
+                        singleHabit: habit
                     )
                 }
             }
@@ -326,8 +315,5 @@ struct HabitDetailView: View {
         }
         .navigationTitle(habit.name)
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            heatmapData = heatmapProvider.generateHabitHeatmap(habit: habit)
-        }
     }
 }

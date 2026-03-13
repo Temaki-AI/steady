@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// Collapsible time-of-day group (Morning, Afternoon, Evening, Anytime)
+/// Designed to be used inside a List — outputs a Section with native swipe actions.
 struct TimeGroupView: View {
     let timeOfDay: TimeOfDay
     let habits: [Habit]
@@ -9,7 +10,6 @@ struct TimeGroupView: View {
     let onToggle: (Habit) -> Void
     let onEdit: (Habit) -> Void
     let onArchive: (Habit) -> Void
-    @Binding var activeSwipeID: UUID?
 
     @AppStorage("collapsed_\(TimeOfDay.morning.rawValue)") private var collapsedMorning = false
     @AppStorage("collapsed_\(TimeOfDay.afternoon.rawValue)") private var collapsedAfternoon = false
@@ -44,8 +44,8 @@ struct TimeGroupView: View {
 
     var body: some View {
         if !habits.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                // Section Header
+            Section {
+                // Section Header (collapsible)
                 Button {
                     HapticEngine.toggleGroup()
                     withAnimation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.7)) ?? .easeInOut(duration: 0.2)) {
@@ -74,16 +74,14 @@ struct TimeGroupView: View {
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
                         }
-                        
+
                         // Mini progress bar
                         GeometryReader { geometry in
                             ZStack(alignment: .leading) {
-                                // Background track
                                 Capsule()
                                     .fill(DesignSystem.Colors.emptyCells)
                                     .frame(height: 3)
-                                
-                                // Progress fill
+
                                 Capsule()
                                     .fill(allDone ? DesignSystem.Colors.primaryGreen : DesignSystem.Colors.primaryGreen.opacity(0.6))
                                     .frame(width: geometry.size.width * CGFloat(completedCount) / CGFloat(habits.count), height: 3)
@@ -92,27 +90,39 @@ struct TimeGroupView: View {
                         .frame(height: 3)
                     }
                     .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
                     .background(
                         allDone ? DesignSystem.Colors.primaryGreen.opacity(0.08) : Color.clear
                     )
                     .cornerRadius(DesignSystem.CornerRadius.md)
                 }
                 .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
 
-                // Habit List
+                // Habit rows with native swipe actions
                 if !isCollapsed {
                     ForEach(habits.sorted(by: { $0.position < $1.position })) { habit in
-                        SwipeableHabitRow(
+                        HabitRowView(
                             habit: habit,
                             date: date,
                             streak: streaks[habit.id] ?? 0,
-                            onToggle: { onToggle(habit) },
-                            onEdit: { onEdit(habit) },
-                            onArchive: { onArchive(habit) },
-                            activeSwipeID: $activeSwipeID
+                            onToggle: { onToggle(habit) }
                         )
-                        .padding(.horizontal, 16)
+                        .onTapGesture {
+                            onEdit(habit)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                onArchive(habit)
+                            } label: {
+                                Label("Archive", systemImage: "archivebox.fill")
+                            }
+                            .tint(.orange)
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 2, leading: 16, bottom: 2, trailing: 16))
                     }
                 }
             }

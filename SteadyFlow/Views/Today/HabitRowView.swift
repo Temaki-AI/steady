@@ -24,19 +24,9 @@ struct HabitRowView: View {
             CheckCircle(
                 isCompleted: isCompleted,
                 color: habitColor,
+                icon: habit.icon,
                 onToggle: onToggle
             )
-
-            // Icon with tinted circular background
-            ZStack {
-                Circle()
-                    .fill(habitColor.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                
-                Image(systemName: habit.icon)
-                    .font(.body)
-                    .foregroundStyle(habitColor)
-            }
 
             Text(habit.name)
                 .font(.body)

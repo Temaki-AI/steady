@@ -10,9 +10,9 @@ struct TodayView: View {
     @State private var selectedDate = Date()
     @State private var showCreateSheet = false
     @State private var showJournalSheet = false
-    @State private var showEditSheet = false
     @State private var habitToEdit: Habit?
-    @State private var activeSwipeID: UUID?
+    @State private var habitToArchive: Habit?
+    @State private var showArchiveConfirmation = false
     @State private var streaks: [UUID: Int] = [:]
 
     private let streakCalculator = StreakCalculator()
@@ -31,54 +31,87 @@ struct TodayView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Date Bar
-                    DateBarView(selectedDate: $selectedDate)
-                        .padding(.vertical, 8)
-
-                    Divider()
-                        .padding(.horizontal, 16)
-
-                    // Progress summary
-                    if todayScheduledCount > 0 {
+            List {
+                // Title + Date bar header (no list chrome)
+                Section {
+                    VStack(spacing: 0) {
+                        // Title row with actions
                         HStack {
-                            Text("\(todayCompletedCount)/\(todayScheduledCount) completed")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            if !Calendar.current.isDateInToday(selectedDate) {
+                                Button("Today") {
+                                    withAnimation {
+                                        selectedDate = Date()
+                                    }
+                                }
+                                .font(.subheadline)
+                                .buttonStyle(.borderless)
+                            }
+
+                            Text(navigationTitle)
+                                .font(.title)
+                                .fontWeight(.bold)
+
                             Spacer()
+
+                            Button {
+                                showCreateSheet = true
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                            }
+                            .buttonStyle(.borderless)
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
+                        .padding(.bottom, 16)
+
+                        // Date Bar
+                        DateBarView(selectedDate: $selectedDate)
+                            .padding(.vertical, 8)
+
+                        Divider()
+
+                        // Progress summary
+                        if todayScheduledCount > 0 {
+                            HStack {
+                                Text("\(todayCompletedCount)/\(todayScheduledCount) completed")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                            .padding(.top, 12)
+                        }
                     }
+                }
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
 
-                    // Time-of-day groups
-                    ForEach(TimeOfDay.allCases.sorted(), id: \.self) { timeOfDay in
-                        let groupHabits = (habitsByGroup[timeOfDay] ?? [])
-                            .filter { $0.existedOn(date: selectedDate) }
+                // Time-of-day groups
+                ForEach(TimeOfDay.allCases.sorted(), id: \.self) { timeOfDay in
+                    let groupHabits = (habitsByGroup[timeOfDay] ?? [])
+                        .filter { $0.existedOn(date: selectedDate) }
 
-                        TimeGroupView(
-                            timeOfDay: timeOfDay,
-                            habits: groupHabits,
-                            date: selectedDate,
-                            streaks: streaks,
-                            onToggle: { habit in
-                                activeSwipeID = nil
-                                toggleHabit(habit)
-                            },
-                            onEdit: { habit in
-                                habitToEdit = habit
-                                showEditSheet = true
-                            },
-                            onArchive: { habit in
-                                archiveHabit(habit)
-                            },
-                            activeSwipeID: $activeSwipeID
-                        )
-                    }
+                    TimeGroupView(
+                        timeOfDay: timeOfDay,
+                        habits: groupHabits,
+                        date: selectedDate,
+                        streaks: streaks,
+                        onToggle: { habit in
+                            toggleHabit(habit)
+                        },
+                        onEdit: { habit in
+                            habitToEdit = habit
+                        },
+                        onArchive: { habit in
+                            habitToArchive = habit
+                            showArchiveConfirmation = true
+                        }
+                    )
+                }
 
-                    // Empty state
-                    if habits.isEmpty {
+                // Empty state
+                if habits.isEmpty {
+                    Section {
                         VStack(spacing: 20) {
                             Image(systemName: "leaf.circle.fill")
                                 .font(.system(size: 72))
@@ -112,49 +145,46 @@ struct TodayView: View {
                             }
                             .padding(.top, 8)
                         }
-                        .padding(.top, 80)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
                     }
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                }
 
-                    // Daily note preview
+                // Daily note preview
+                Section {
                     DailyNotePreview(date: selectedDate, onTap: { showJournalSheet = true })
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
-
-                    Spacer(minLength: 80)
                 }
+                .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
-            .navigationTitle(navigationTitle)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showCreateSheet = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .fontWeight(.semibold)
-                    }
-                }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    if !Calendar.current.isDateInToday(selectedDate) {
-                        Button("Today") {
-                            withAnimation {
-                                selectedDate = Date()
-                            }
-                        }
-                        .font(.subheadline)
-                    }
-                }
-            }
+            .listStyle(.plain)
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showCreateSheet) {
                 HabitFormView()
             }
-            .sheet(isPresented: $showEditSheet) {
-                if let habit = habitToEdit {
-                    HabitFormView(editingHabit: habit)
-                }
+            .sheet(item: $habitToEdit) { habit in
+                HabitFormView(editingHabit: habit)
             }
             .sheet(isPresented: $showJournalSheet) {
                 DailyNoteSheet(date: selectedDate)
+            }
+            .alert("Archive Habit?", isPresented: $showArchiveConfirmation) {
+                Button("Cancel", role: .cancel) {
+                    habitToArchive = nil
+                }
+                Button("Archive", role: .destructive) {
+                    if let habit = habitToArchive {
+                        archiveHabit(habit)
+                        habitToArchive = nil
+                    }
+                }
+            } message: {
+                if let habit = habitToArchive {
+                    Text("\"\(habit.name)\" will be moved to your archived habits. You can restore it later from Settings.")
+                }
             }
             .onAppear {
                 recalculateStreaks()
@@ -183,7 +213,7 @@ struct TodayView: View {
         // Recalculate streak for this habit
         let result = streakCalculator.calculate(for: habit)
         streaks[habit.id] = result.current
-        
+
         // Celebrate when ALL habits for the day are done
         if wasCompleted {
             let dateString = Habit.dateString(from: selectedDate)
@@ -205,17 +235,12 @@ struct TodayView: View {
     }
 
     private func recalculateStreaks() {
-        // Run on background to keep UI snappy
-        Task.detached(priority: .userInitiated) {
-            var newStreaks: [UUID: Int] = [:]
-            let calc = StreakCalculator()
-            for habit in habits {
-                newStreaks[habit.id] = calc.calculate(for: habit).current
-            }
-            await MainActor.run {
-                streaks = newStreaks
-            }
+        let calc = StreakCalculator()
+        var newStreaks: [UUID: Int] = [:]
+        for habit in habits {
+            newStreaks[habit.id] = calc.calculate(for: habit).current
         }
+        streaks = newStreaks
     }
 }
 
@@ -251,7 +276,7 @@ struct DailyNotePreview: View {
                 }
 
                 Spacer()
-                
+
                 Image(systemName: "chevron.right")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)

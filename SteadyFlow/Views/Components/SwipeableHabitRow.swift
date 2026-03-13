@@ -9,19 +9,31 @@ struct SwipeableHabitRow: View {
     let onToggle: () -> Void
     let onEdit: () -> Void
     let onArchive: () -> Void
-    
+
     /// Shared across all rows — only one can be open at a time
     @Binding var activeSwipeID: UUID?
-    
+
     @State private var offset: CGFloat = 0
-    
+
     private let actionWidth: CGFloat = 72
-    
+
     private var isActive: Bool { activeSwipeID == habit.id }
-    
+
     var body: some View {
         ZStack(alignment: .center) {
-            // TRAILING action: Archive (revealed when swiping LEFT)
+            // Background fill that covers the entire row area behind the sliding content.
+            // Prevents gaps when dragging beyond action width.
+            GeometryReader { _ in
+                HStack(spacing: 0) {
+                    // Edit background (visible when swiping right)
+                    DesignSystem.Colors.primaryGreen
+                    // Archive background (visible when swiping left)
+                    Color.orange
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md))
+
+            // TRAILING action label: Archive (revealed when swiping LEFT)
             HStack {
                 Spacer()
                 Button {
@@ -39,12 +51,10 @@ struct SwipeableHabitRow: View {
                     .frame(width: actionWidth)
                     .frame(maxHeight: .infinity)
                 }
-                .background(.orange)
             }
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md))
             .opacity(offset < 0 ? 1 : 0)
-            
-            // LEADING action: Edit (revealed when swiping RIGHT)
+
+            // LEADING action label: Edit (revealed when swiping RIGHT)
             HStack {
                 Button {
                     close()
@@ -61,12 +71,10 @@ struct SwipeableHabitRow: View {
                     .frame(width: actionWidth)
                     .frame(maxHeight: .infinity)
                 }
-                .background(DesignSystem.Colors.primaryGreen)
                 Spacer()
             }
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md))
             .opacity(offset > 0 ? 1 : 0)
-            
+
             // Foreground: the actual habit row
             HabitRowView(
                 habit: habit,
@@ -86,27 +94,27 @@ struct SwipeableHabitRow: View {
                         if !isActive && activeSwipeID != nil {
                             activeSwipeID = nil
                         }
-                        
+
                         var newOffset = value.translation.width
-                        
+
                         // If already snapped open, add to that position
                         if isActive {
                             newOffset += (offset > 0 ? actionWidth : -actionWidth)
                         }
-                        
-                        // Rubber-band resistance past thresholds
+
+                        // Rubber-band resistance past the action width
                         let limit = actionWidth * 1.2
                         if newOffset > limit {
                             newOffset = limit + (newOffset - limit) * 0.15
                         } else if newOffset < -limit {
                             newOffset = -limit + (newOffset + limit) * 0.15
                         }
-                        
+
                         offset = newOffset
                     }
                     .onEnded { value in
                         let velocity = value.predictedEndTranslation.width - value.translation.width
-                        
+
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                             if offset > actionWidth * 0.5 || velocity > 300 {
                                 // Snap open: edit
@@ -143,7 +151,7 @@ struct SwipeableHabitRow: View {
             }
         }
     }
-    
+
     private func close() {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             offset = 0

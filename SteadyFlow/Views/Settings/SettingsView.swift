@@ -4,48 +4,17 @@ import SwiftData
 /// Settings tab
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
-    @AppStorage("endOfDayHour") private var endOfDayHour = 3
     @AppStorage("firstDayOfWeek") private var firstDayOfWeek = 1 // 1 = Sunday
     @AppStorage("accentColorHex") private var accentColorHex = "#81C784"
 
-    @State private var showExportSheet = false
-    @State private var showImportPicker = false
     @State private var showEraseConfirmation = false
-    @State private var showArchivedHabits = false
     @State private var exportURL: URL?
 
     var body: some View {
         NavigationStack {
             List {
-                // Branded header
-                Section {
-                    VStack(spacing: 12) {
-                        Image(systemName: "leaf.circle.fill")
-                            .font(.system(size: 60))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [DesignSystem.Colors.primaryGreen, DesignSystem.Colors.darkGreen],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                        
-                        Text("Steady Flow")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Text("Version 1.0")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 20)
-                }
-                .listRowBackground(Color.clear)
-                
                 // General
                 Section("General") {
-                    Stepper("End of day: \(endOfDayHour):00 AM", value: $endOfDayHour, in: 0...5)
                     Picker("Week starts on", selection: $firstDayOfWeek) {
                         Text("Sunday").tag(1)
                         Text("Monday").tag(2)
@@ -101,17 +70,6 @@ struct SettingsView: View {
                     }
                 }
 
-                // Sync
-                Section("Sync") {
-                    HStack {
-                        Label("iCloud Sync", systemImage: "icloud.fill")
-                        Spacer()
-                        Text("Automatic")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
                 // Archived
                 Section {
                     NavigationLink {
@@ -126,16 +84,12 @@ struct SettingsView: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text("1.0.0")
+                        Text(appVersion)
                             .foregroundStyle(.secondary)
-                    }
-
-                    Link(destination: URL(string: "https://github.com/steadyflow-app/steady-flow")!) {
-                        Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 }
             }
-            .navigationTitle("Settings")
+            .toolbar(.hidden, for: .navigationBar)
             .alert("Erase All Data?", isPresented: $showEraseConfirmation) {
                 Button("Cancel", role: .cancel) {}
                 Button("Erase Everything", role: .destructive) {
@@ -148,6 +102,12 @@ struct SettingsView: View {
                 ShareSheet(url: url)
             }
         }
+    }
+
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return "\(version) (\(build))"
     }
 
     private enum ExportFormat { case json, csv }
@@ -165,10 +125,10 @@ struct SettingsView: View {
         switch format {
         case .json:
             data = exportService.exportJSON(habits: habits, notes: notes)
-            filename = "steady-export-\(Habit.dateString(from: Date())).json"
+            filename = "steady-habits-export-\(Habit.dateString(from: Date())).json"
         case .csv:
             data = exportService.exportCSV(habits: habits, notes: notes)
-            filename = "steady-export-\(Habit.dateString(from: Date())).csv"
+            filename = "steady-habits-export-\(Habit.dateString(from: Date())).csv"
         }
 
         guard let data else { return }
