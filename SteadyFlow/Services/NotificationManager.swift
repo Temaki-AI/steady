@@ -82,11 +82,4 @@ final class NotificationManager {
         }
     }
 
-    /// Reschedule all notifications (called on app launch and background refresh)
-    func rescheduleAll(habits: [Habit]) {
-        center.removeAllPendingNotificationRequests()
-        for habit in habits where !habit.isArchived {
-            scheduleReminders(for: habit)
-        }
-    }
 }

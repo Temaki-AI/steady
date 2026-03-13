@@ -1,8 +1,8 @@
 //
 //  DesignSystem.swift
-//  Steady Flow
+//  Steady Habits
 //
-//  Central design tokens for the Steady Flow app
+//  Central design tokens for the Steady Habits app
 //
 
 import SwiftUI
@@ -10,8 +10,13 @@ import SwiftUI
 struct DesignSystem {
     // MARK: - Colors
     struct Colors {
-        // Primary greens - muted sage palette
-        static let primaryGreen = Color(hex: "6B9B7D")
+        // Primary accent — reads user preference, falls back to green
+        static let defaultAccentHex = "#81C784"
+        static var primaryGreen: Color {
+            let hex = UserDefaults.standard.string(forKey: "accentColorHex") ?? defaultAccentHex
+            return Color(hex: hex)
+        }
+        static let defaultGreen = Color(hex: defaultAccentHex)
         static let lightGreen = Color(hex: "A8C5B4")
         static let darkGreen = Color(hex: "4A7A5E")
         

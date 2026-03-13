@@ -19,7 +19,10 @@ struct SteadyFlowApp: App {
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Fallback to in-memory store so the app doesn't crash
+            print("⚠️ Persistent store failed: \(error). Using in-memory store.")
+            let fallback = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            return try! ModelContainer(for: schema, configurations: [fallback])
         }
     }()
     
@@ -33,9 +36,7 @@ struct SteadyFlowApp: App {
         tabBarAppearance.backgroundColor = UIColor(Color(light: "FAFAF7", dark: "1C1C1E"))
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
-        if #available(iOS 15.0, *) {
-            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        }
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
     }
 
     var body: some Scene {
@@ -48,6 +49,11 @@ struct SteadyFlowApp: App {
 
 struct ContentView: View {
     @State private var selectedTab = 0
+    @AppStorage("accentColorHex") private var accentColorHex = "#81C784"
+
+    private var accentColor: Color {
+        Color(hex: accentColorHex)
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -72,6 +78,6 @@ struct ContentView: View {
         .onChange(of: selectedTab) { _, _ in
             HapticEngine.tabTap()
         }
-        .tint(DesignSystem.Colors.primaryGreen)
+        .tint(accentColor)
     }
 }

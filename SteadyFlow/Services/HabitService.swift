@@ -1,6 +1,5 @@
 import Foundation
 import SwiftData
-import WidgetKit
 
 /// Core business logic for habit operations
 @Observable
@@ -41,7 +40,6 @@ final class HabitService {
 
         // Schedule notifications
         notificationManager.scheduleReminders(for: habit)
-        WidgetCenter.shared.reloadAllTimelines()
 
         return habit
     }
@@ -50,7 +48,6 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.scheduleReminders(for: habit)
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func archiveHabit(_ habit: Habit) {
@@ -58,7 +55,6 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.cancelReminders(for: habit)
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func unarchiveHabit(_ habit: Habit) {
@@ -67,14 +63,12 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.scheduleReminders(for: habit)
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func deleteHabit(_ habit: Habit) {
         notificationManager.cancelReminders(for: habit)
         modelContext.delete(habit)
         try? modelContext.save()
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // MARK: - Check-Off (Performance Critical — must be < 16ms)
@@ -90,16 +84,14 @@ final class HabitService {
             modelContext.delete(existing)
             try? modelContext.save()
             notificationManager.scheduleReminders(for: habit)
-            WidgetCenter.shared.reloadAllTimelines()
-            return false
+                return false
         } else {
             // Complete
             let completion = Completion(habit: habit, date: date)
             modelContext.insert(completion)
             try? modelContext.save()
             notificationManager.cancelTodayReminder(for: habit)
-            WidgetCenter.shared.reloadAllTimelines()
-            return true
+                return true
         }
     }
 
@@ -125,24 +117,6 @@ final class HabitService {
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
         )
         return (try? modelContext.fetch(descriptor)) ?? []
-    }
-
-    // MARK: - Reordering
-
-    func moveHabit(_ habit: Habit, to newPosition: Int) {
-        let group = activeHabits(for: habit.timeOfDay)
-        var sorted = group.sorted { $0.position < $1.position }
-
-        guard let currentIndex = sorted.firstIndex(where: { $0.id == habit.id }) else { return }
-        let item = sorted.remove(at: currentIndex)
-        let clampedPosition = min(max(newPosition, 0), sorted.count)
-        sorted.insert(item, at: clampedPosition)
-
-        for (index, h) in sorted.enumerated() {
-            h.position = index
-        }
-
-        try? modelContext.save()
     }
 
     // MARK: - Daily Notes

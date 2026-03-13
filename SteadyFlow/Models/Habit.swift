@@ -120,17 +120,18 @@ final class Habit {
 
     // MARK: - Date Helpers
 
-    static func dateString(from date: Date) -> String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = .current
-        return formatter.string(from: date)
+        return formatter
+    }()
+
+    static func dateString(from date: Date) -> String {
+        dateFormatter.string(from: date)
     }
 
     static func date(from string: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = .current
-        return formatter.date(from: string)
+        dateFormatter.date(from: string)
     }
 }
