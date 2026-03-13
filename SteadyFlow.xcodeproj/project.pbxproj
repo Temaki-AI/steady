@@ -1,0 +1,595 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0719AB1DCC9B78E52CA3EE50 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15374D816460BD4350971462 /* ProgressView.swift */; };
+		1BC25789AD02B3606F93AE27 /* HabitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4D5495714A5DDC2360A87E /* HabitService.swift */; };
+		2031090D75632DF924D7A839 /* CheckCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974AF7855D7D34C736C204CF /* CheckCircle.swift */; };
+		35A9F60C1DD335C4D4C00997 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5DB4DD91CCF75724BF7878 /* TodayView.swift */; };
+		38B626C35F5AC1A59DF60C97 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BDF7F9B04EC445E2456765 /* Habit.swift */; };
+		3CE18278AF672C46EB80FF6B /* DateBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C51C0047FAF412EBF5A805C /* DateBarView.swift */; };
+		47DAD88AE65F4488A478BB22 /* IconPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60AC0F0E71B28313687263 /* IconPickerView.swift */; };
+		4D99C7F6BD17A263E789FAC7 /* ScreenshotPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CB1E85FFF2725B1F55DD2 /* ScreenshotPreviews.swift */; };
+		4E4E8B4864F784C2C1B844A0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51E2A212A443A0E4386DD2 /* SettingsView.swift */; };
+		4FB50F184D46ADE6A356F774 /* SwipeableHabitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */; };
+		50F9B38CE5A3359ED096B970 /* DailyNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4AC4A588956D4089280CA0 /* DailyNote.swift */; };
+		5F477028AC43BEA012A7C59C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B965B05067A111F15A16C17 /* Assets.xcassets */; };
+		60F1F563F1CACE6A82FB76CF /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37684189A69E617DB6EE2C4 /* ExportService.swift */; };
+		62D1D618376430C1DC5CA949 /* HabitFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1874306BD30E73D813E22A9 /* HabitFormView.swift */; };
+		62ED7A0B1F262F781E8740CC /* HapticEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C489EBA327A33631DB17F5C9 /* HapticEngine.swift */; };
+		692F6F2892A5FF2EF2F3C672 /* HabitRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D387617B0BA2DE8C65CD9E /* HabitRowView.swift */; };
+		78C2344DD14E3ADAEB78F716 /* HabitSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B47CDD810E2C6A478D98163 /* HabitSchedule.swift */; };
+		7CF19E6CE3C87BBEEE686EAB /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED86B041B128269183A32E53 /* DesignSystem.swift */; };
+		8B51FD8485D63323B8442022 /* SteadyFlowWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA898D7EBF6EBEBF9BCF7FF /* SteadyFlowWidget.swift */; };
+		A62062BB8DDB32633BB9D453 /* TimeGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E353827A29257F2E6187D000 /* TimeGroupView.swift */; };
+		B37A94A4B8721FEEE619889C /* StreakBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4165B3B2261561306CE8E5A /* StreakBadge.swift */; };
+		B77E465FEB6871A2E81F4FCF /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ADB0C7D8117191B97F486A /* NotificationManager.swift */; };
+		BC2DC9B93AD64614F8FD8D44 /* HeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F1686DD2D56C643B3A697E /* HeatmapView.swift */; };
+		C5D2E52F537112B773FC152C /* HeatmapDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED924298777DC7AF790EA86E /* HeatmapDataProvider.swift */; };
+		DAEB49774F70804F6790D0CC /* StreakCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E755C1122129DD44DF2A9 /* StreakCalculator.swift */; };
+		E4406CF25DD5D0B5AFD27D71 /* Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE04141DDEE2F83BA095997 /* Completion.swift */; };
+		EACEE05814C5BDEAABA46071 /* SteadyFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D915D92088A4B7A1BBD8D2D1 /* SteadyFlowApp.swift */; };
+		AAAA000000000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000001 /* PrivacyInfo.xcprivacy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0AA898D7EBF6EBEBF9BCF7FF /* SteadyFlowWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteadyFlowWidget.swift; sourceTree = "<group>"; };
+		15374D816460BD4350971462 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		1B47CDD810E2C6A478D98163 /* HabitSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSchedule.swift; sourceTree = "<group>"; };
+		1B51E2A212A443A0E4386DD2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2B965B05067A111F15A16C17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		326CB1E85FFF2725B1F55DD2 /* ScreenshotPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotPreviews.swift; sourceTree = "<group>"; };
+		36ADB0C7D8117191B97F486A /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		44E7AB22C8B6BE49D13E6059 /* SteadyFlowWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SteadyFlowWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C51C0047FAF412EBF5A805C /* DateBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateBarView.swift; sourceTree = "<group>"; };
+		523EE13A06505E2A920DA5AF /* SteadyFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SteadyFlow.entitlements; sourceTree = "<group>"; };
+		82BDF7F9B04EC445E2456765 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		920E755C1122129DD44DF2A9 /* StreakCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCalculator.swift; sourceTree = "<group>"; };
+		974AF7855D7D34C736C204CF /* CheckCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCircle.swift; sourceTree = "<group>"; };
+		9778372760BA56D65A92A827 /* SteadyFlowWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SteadyFlowWidget.entitlements; sourceTree = "<group>"; };
+		AE4AC4A588956D4089280CA0 /* DailyNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNote.swift; sourceTree = "<group>"; };
+		AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableHabitRow.swift; sourceTree = "<group>"; };
+		B4165B3B2261561306CE8E5A /* StreakBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakBadge.swift; sourceTree = "<group>"; };
+		B4F1686DD2D56C643B3A697E /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
+		BD4D5495714A5DDC2360A87E /* HabitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitService.swift; sourceTree = "<group>"; };
+		C489EBA327A33631DB17F5C9 /* HapticEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticEngine.swift; sourceTree = "<group>"; };
+		C5D387617B0BA2DE8C65CD9E /* HabitRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRowView.swift; sourceTree = "<group>"; };
+		C92B00094ED916F536B4D157 /* SteadyFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SteadyFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC5DB4DD91CCF75724BF7878 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		D1874306BD30E73D813E22A9 /* HabitFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFormView.swift; sourceTree = "<group>"; };
+		D37684189A69E617DB6EE2C4 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		D915D92088A4B7A1BBD8D2D1 /* SteadyFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteadyFlowApp.swift; sourceTree = "<group>"; };
+		DE60AC0F0E71B28313687263 /* IconPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerView.swift; sourceTree = "<group>"; };
+		E353827A29257F2E6187D000 /* TimeGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeGroupView.swift; sourceTree = "<group>"; };
+		ED86B041B128269183A32E53 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		ED924298777DC7AF790EA86E /* HeatmapDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapDataProvider.swift; sourceTree = "<group>"; };
+		EDE04141DDEE2F83BA095997 /* Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completion.swift; sourceTree = "<group>"; };
+		AAAA000000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A32865EEA45C009194BDDE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C92B00094ED916F536B4D157 /* SteadyFlow.app */,
+				44E7AB22C8B6BE49D13E6059 /* SteadyFlowWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		223DFC5532B2343D579AB7C7 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				B4F1686DD2D56C643B3A697E /* HeatmapView.swift */,
+				15374D816460BD4350971462 /* ProgressView.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		4EA2372C87AFF5108F797BE0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ED86B041B128269183A32E53 /* DesignSystem.swift */,
+				65D6367ED245644C28502B46 /* Components */,
+				223DFC5532B2343D579AB7C7 /* Progress */,
+				6F0737AA7AA59B94A071A653 /* Screenshots */,
+				DEEEA14F9C584DE2A82DA60A /* Settings */,
+				6C5080D77016B5403BD2C6EF /* Shared */,
+				513A31FD59009FAF9ECABA2A /* Today */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		513A31FD59009FAF9ECABA2A /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				4C51C0047FAF412EBF5A805C /* DateBarView.swift */,
+				C5D387617B0BA2DE8C65CD9E /* HabitRowView.swift */,
+				E353827A29257F2E6187D000 /* TimeGroupView.swift */,
+				CC5DB4DD91CCF75724BF7878 /* TodayView.swift */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		65D6367ED245644C28502B46 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				974AF7855D7D34C736C204CF /* CheckCircle.swift */,
+				B4165B3B2261561306CE8E5A /* StreakBadge.swift */,
+				AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		669A63A04585A6DE515242E6 /* SteadyFlowWidget */ = {
+			isa = PBXGroup;
+			children = (
+				9778372760BA56D65A92A827 /* SteadyFlowWidget.entitlements */,
+				0AA898D7EBF6EBEBF9BCF7FF /* SteadyFlowWidget.swift */,
+			);
+			path = SteadyFlowWidget;
+			sourceTree = "<group>";
+		};
+		6C5080D77016B5403BD2C6EF /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				D1874306BD30E73D813E22A9 /* HabitFormView.swift */,
+				DE60AC0F0E71B28313687263 /* IconPickerView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		6F0737AA7AA59B94A071A653 /* Screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				326CB1E85FFF2725B1F55DD2 /* ScreenshotPreviews.swift */,
+			);
+			path = Screenshots;
+			sourceTree = "<group>";
+		};
+		83581105F1D8B530B8A3D300 = {
+			isa = PBXGroup;
+			children = (
+				C20AB8DA42F5703ABBA5843F /* SteadyFlow */,
+				669A63A04585A6DE515242E6 /* SteadyFlowWidget */,
+				0A32865EEA45C009194BDDE1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A8A638CA35DDA8506F2F3102 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EDE04141DDEE2F83BA095997 /* Completion.swift */,
+				AE4AC4A588956D4089280CA0 /* DailyNote.swift */,
+				82BDF7F9B04EC445E2456765 /* Habit.swift */,
+				1B47CDD810E2C6A478D98163 /* HabitSchedule.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C20AB8DA42F5703ABBA5843F /* SteadyFlow */ = {
+			isa = PBXGroup;
+			children = (
+				2B965B05067A111F15A16C17 /* Assets.xcassets */,
+				AAAA000000000000000001 /* PrivacyInfo.xcprivacy */,
+				523EE13A06505E2A920DA5AF /* SteadyFlow.entitlements */,
+				D915D92088A4B7A1BBD8D2D1 /* SteadyFlowApp.swift */,
+				A8A638CA35DDA8506F2F3102 /* Models */,
+				E3C469E7BBC09D497B048EA5 /* Services */,
+				4EA2372C87AFF5108F797BE0 /* Views */,
+			);
+			path = SteadyFlow;
+			sourceTree = "<group>";
+		};
+		DEEEA14F9C584DE2A82DA60A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1B51E2A212A443A0E4386DD2 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		E3C469E7BBC09D497B048EA5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D37684189A69E617DB6EE2C4 /* ExportService.swift */,
+				BD4D5495714A5DDC2360A87E /* HabitService.swift */,
+				C489EBA327A33631DB17F5C9 /* HapticEngine.swift */,
+				ED924298777DC7AF790EA86E /* HeatmapDataProvider.swift */,
+				36ADB0C7D8117191B97F486A /* NotificationManager.swift */,
+				920E755C1122129DD44DF2A9 /* StreakCalculator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EFC7B978947FFBC6C4618475 /* SteadyFlowWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7034DA9B38CDE96E4FF82E77 /* Build configuration list for PBXNativeTarget "SteadyFlowWidget" */;
+			buildPhases = (
+				6B901BD66485CBB6A4269CC3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SteadyFlowWidget;
+			packageProductDependencies = (
+			);
+			productName = SteadyFlowWidget;
+			productReference = 44E7AB22C8B6BE49D13E6059 /* SteadyFlowWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		FF423E8B4D41C68FF98822B6 /* SteadyFlow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2EBCEFC8A6BA21D64D040F5 /* Build configuration list for PBXNativeTarget "SteadyFlow" */;
+			buildPhases = (
+				797732454C0A16FF38771387 /* Sources */,
+				8E8C9B985050399EA2D99D02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SteadyFlow;
+			packageProductDependencies = (
+			);
+			productName = SteadyFlow;
+			productReference = C92B00094ED916F536B4D157 /* SteadyFlow.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFBAB6F558C76E1E6FDB38DE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					EFC7B978947FFBC6C4618475 = {
+						DevelopmentTeam = 628QH4492F;
+					};
+				};
+			};
+			buildConfigurationList = 8E664F992CC0E6E8B7319AE7 /* Build configuration list for PBXProject "SteadyFlow" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 83581105F1D8B530B8A3D300;
+			minimizedProjectReferenceProxies = 1;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FF423E8B4D41C68FF98822B6 /* SteadyFlow */,
+				EFC7B978947FFBC6C4618475 /* SteadyFlowWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8E8C9B985050399EA2D99D02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F477028AC43BEA012A7C59C /* Assets.xcassets in Resources */,
+				AAAA000000000000000002 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6B901BD66485CBB6A4269CC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B51FD8485D63323B8442022 /* SteadyFlowWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		797732454C0A16FF38771387 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2031090D75632DF924D7A839 /* CheckCircle.swift in Sources */,
+				E4406CF25DD5D0B5AFD27D71 /* Completion.swift in Sources */,
+				50F9B38CE5A3359ED096B970 /* DailyNote.swift in Sources */,
+				3CE18278AF672C46EB80FF6B /* DateBarView.swift in Sources */,
+				7CF19E6CE3C87BBEEE686EAB /* DesignSystem.swift in Sources */,
+				60F1F563F1CACE6A82FB76CF /* ExportService.swift in Sources */,
+				38B626C35F5AC1A59DF60C97 /* Habit.swift in Sources */,
+				62D1D618376430C1DC5CA949 /* HabitFormView.swift in Sources */,
+				692F6F2892A5FF2EF2F3C672 /* HabitRowView.swift in Sources */,
+				78C2344DD14E3ADAEB78F716 /* HabitSchedule.swift in Sources */,
+				1BC25789AD02B3606F93AE27 /* HabitService.swift in Sources */,
+				62ED7A0B1F262F781E8740CC /* HapticEngine.swift in Sources */,
+				C5D2E52F537112B773FC152C /* HeatmapDataProvider.swift in Sources */,
+				BC2DC9B93AD64614F8FD8D44 /* HeatmapView.swift in Sources */,
+				47DAD88AE65F4488A478BB22 /* IconPickerView.swift in Sources */,
+				B77E465FEB6871A2E81F4FCF /* NotificationManager.swift in Sources */,
+				0719AB1DCC9B78E52CA3EE50 /* ProgressView.swift in Sources */,
+				4D99C7F6BD17A263E789FAC7 /* ScreenshotPreviews.swift in Sources */,
+				4E4E8B4864F784C2C1B844A0 /* SettingsView.swift in Sources */,
+				EACEE05814C5BDEAABA46071 /* SteadyFlowApp.swift in Sources */,
+				B37A94A4B8721FEEE619889C /* StreakBadge.swift in Sources */,
+				DAEB49774F70804F6790D0CC /* StreakCalculator.swift in Sources */,
+				4FB50F184D46ADE6A356F774 /* SwipeableHabitRow.swift in Sources */,
+				A62062BB8DDB32633BB9D453 /* TimeGroupView.swift in Sources */,
+				35A9F60C1DD335C4D4C00997 /* TodayView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3AB9FCA2B1B0EEC534197509 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SteadyFlowWidget/SteadyFlowWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 628QH4492F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.steadyflow.habits.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		40479C0175EBC1EFC9432EE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 628QH4492F;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		6C0BF7FC8CB7F58E01256DCA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SteadyFlow/SteadyFlow.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 628QH4492F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_CFBundleDisplayName = "Steady Habits";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.steadyflow.habits;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A3D49A506E28E417CF16D302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SteadyFlowWidget/SteadyFlowWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 628QH4492F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.steadyflow.habits.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B932B632718C0FF2DF401A62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 628QH4492F;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		D8C73A2391E1B25214015CB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SteadyFlow/SteadyFlow.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 628QH4492F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_CFBundleDisplayName = "Steady Habits";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.steadyflow.habits;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7034DA9B38CDE96E4FF82E77 /* Build configuration list for PBXNativeTarget "SteadyFlowWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3AB9FCA2B1B0EEC534197509 /* Debug */,
+				A3D49A506E28E417CF16D302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8E664F992CC0E6E8B7319AE7 /* Build configuration list for PBXProject "SteadyFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B932B632718C0FF2DF401A62 /* Debug */,
+				40479C0175EBC1EFC9432EE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B2EBCEFC8A6BA21D64D040F5 /* Build configuration list for PBXNativeTarget "SteadyFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8C73A2391E1B25214015CB5 /* Debug */,
+				6C0BF7FC8CB7F58E01256DCA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFBAB6F558C76E1E6FDB38DE /* Project object */;
+}
