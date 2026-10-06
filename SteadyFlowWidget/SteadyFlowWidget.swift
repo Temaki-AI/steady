@@ -11,7 +11,11 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SteadyFlowEntry) -> Void) {
-        completion(placeholder(in: context))
+        if context.isPreview {
+            completion(placeholder(in: context))
+        } else {
+            completion(loadEntry())
+        }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SteadyFlowEntry>) -> Void) {
@@ -25,9 +29,39 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
     }
 
     private func loadEntry() -> SteadyFlowEntry {
-        // In production: read from shared App Group SwiftData store
-        // For now, return placeholder
-        SteadyFlowEntry(date: Date(), completed: 0, total: 0, habits: [])
+        do {
+            let container = try SharedModelContainer.makeWidgetContainer()
+            let context = ModelContext(container)
+
+            let descriptor = FetchDescriptor<Habit>(
+                predicate: #Predicate { !$0.isArchived },
+                sortBy: [SortDescriptor(\.position)]
+            )
+            let habits = try context.fetch(descriptor)
+            let today = Date()
+
+            let widgetHabits = habits
+                .filter { $0.isScheduled(for: today) }
+                .map { habit in
+                    WidgetHabit(
+                        id: habit.id,
+                        name: habit.name,
+                        icon: habit.icon,
+                        colorHex: habit.colorHex,
+                        isCompleted: habit.isCompleted(for: today)
+                    )
+                }
+
+            let completed = widgetHabits.filter(\.isCompleted).count
+            return SteadyFlowEntry(
+                date: today,
+                completed: completed,
+                total: widgetHabits.count,
+                habits: widgetHabits
+            )
+        } catch {
+            return SteadyFlowEntry(date: Date(), completed: 0, total: 0, habits: [])
+        }
     }
 }
 
@@ -46,6 +80,22 @@ struct WidgetHabit: Identifiable {
     let icon: String
     let colorHex: String
     let isCompleted: Bool
+}
+
+// MARK: - Entry View (switches on widget family)
+
+struct WidgetEntryView: View {
+    @Environment(\.widgetFamily) var family
+    let entry: SteadyFlowEntry
+
+    var body: some View {
+        switch family {
+        case .systemSmall:
+            SmallWidgetView(entry: entry)
+        default:
+            MediumWidgetView(entry: entry)
+        }
+    }
 }
 
 // MARK: - Small Widget (Ring Chart)
@@ -184,8 +234,36 @@ struct CheckOffHabitIntent: AppIntent {
     }
 
     func perform() async throws -> some IntentResult {
-        // In production: write to shared SwiftData store
-        // Then reload widget timelines
+        guard let uuid = UUID(uuidString: habitId) else {
+            return .result()
+        }
+
+        do {
+            let container = try SharedModelContainer.makeWidgetContainer()
+            let context = ModelContext(container)
+
+            var descriptor = FetchDescriptor<Habit>(
+                predicate: #Predicate<Habit> { $0.id == uuid }
+            )
+            descriptor.fetchLimit = 1
+            guard let habit = try context.fetch(descriptor).first else {
+                return .result()
+            }
+
+            let dateString = Habit.dateString(from: Date())
+
+            if let existing = habit.safeCompletions.first(where: { $0.date == dateString }) {
+                context.delete(existing)
+            } else {
+                let completion = Completion(habit: habit, date: Date())
+                context.insert(completion)
+            }
+
+            try context.save()
+        } catch {
+            // Silently fail — widget will show stale data until next refresh
+        }
+
         WidgetCenter.shared.reloadAllTimelines()
         return .result()
     }
@@ -193,6 +271,7 @@ struct CheckOffHabitIntent: AppIntent {
 
 // MARK: - Widget Bundle
 
+@main
 struct SteadyFlowWidgetBundle: WidgetBundle {
     var body: some Widget {
         SteadyFlowTodayWidget()
@@ -204,10 +283,7 @@ struct SteadyFlowTodayWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: SteadyFlowTimelineProvider()) { entry in
-            switch entry.date { // Use widget family
-            default:
-                MediumWidgetView(entry: entry)
-            }
+            WidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Today's Habits")
         .description("Track your daily habits at a glance.")

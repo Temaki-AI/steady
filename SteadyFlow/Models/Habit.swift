@@ -97,8 +97,7 @@ final class Habit {
 
     /// Check if this habit is scheduled for a given date
     func isScheduled(for date: Date) -> Bool {
-        let completionDates = safeCompletions.map { $0.calendarDate }
-        return schedule.isScheduled(for: date, createdAt: createdAt, completions: completionDates)
+        schedule.isScheduled(for: date, createdAt: createdAt)
     }
 
     /// Check if this habit is completed for a given date

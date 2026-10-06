@@ -26,7 +26,7 @@ enum HabitSchedule: Codable, Hashable {
     }
 
     /// Check if a habit is scheduled for a given date
-    func isScheduled(for date: Date, createdAt: Date, completions: [Date]) -> Bool {
+    func isScheduled(for date: Date, createdAt: Date) -> Bool {
         let calendar = Calendar.current
 
         switch self {

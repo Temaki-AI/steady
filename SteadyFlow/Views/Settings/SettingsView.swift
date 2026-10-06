@@ -139,10 +139,7 @@ struct SettingsView: View {
     }
 
     private func eraseAllData() {
-        try? modelContext.delete(model: Completion.self)
-        try? modelContext.delete(model: DailyNote.self)
-        try? modelContext.delete(model: Habit.self)
-        try? modelContext.save()
+        HabitService(modelContext: modelContext).eraseAllData()
     }
 }
 

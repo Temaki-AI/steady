@@ -4,25 +4,19 @@ import SwiftData
 @main
 struct SteadyFlowApp: App {
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Habit.self,
-            Completion.self,
-            DailyNote.self
-        ])
-
-        let modelConfiguration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: false,
-            cloudKitDatabase: .automatic // iCloud sync via CloudKit
-        )
-
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try SharedModelContainer.makeAppContainer()
         } catch {
             // Fallback to in-memory store so the app doesn't crash
             print("⚠️ Persistent store failed: \(error). Using in-memory store.")
-            let fallback = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-            return try! ModelContainer(for: schema, configurations: [fallback])
+            let fallback = ModelConfiguration(
+                schema: SharedModelContainer.schema,
+                isStoredInMemoryOnly: true
+            )
+            return try! ModelContainer(
+                for: SharedModelContainer.schema,
+                configurations: [fallback]
+            )
         }
     }()
     
@@ -48,6 +42,8 @@ struct SteadyFlowApp: App {
 }
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab = 0
     @AppStorage("accentColorHex") private var accentColorHex = "#81C784"
 
@@ -77,6 +73,12 @@ struct ContentView: View {
         }
         .onChange(of: selectedTab) { _, _ in
             HapticEngine.tabTap()
+        }
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            // Reminders are scheduled a week ahead; top the window up on every launch/foreground
+            if phase == .active {
+                HabitService(modelContext: modelContext).refreshAllReminders()
+            }
         }
         .tint(accentColor)
     }

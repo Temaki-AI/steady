@@ -1,15 +1,22 @@
 import Foundation
 import SwiftData
+import WidgetKit
 
 /// Core business logic for habit operations
+@MainActor
 @Observable
 final class HabitService {
     private let modelContext: ModelContext
     private let streakCalculator = StreakCalculator()
-    private let notificationManager = NotificationManager()
+    private let notificationManager = NotificationManager.shared
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+    }
+
+    /// Notify widgets that habit data has changed
+    private func reloadWidgets() {
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // MARK: - CRUD
@@ -40,6 +47,7 @@ final class HabitService {
 
         // Schedule notifications
         notificationManager.scheduleReminders(for: habit)
+        reloadWidgets()
 
         return habit
     }
@@ -48,6 +56,7 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.scheduleReminders(for: habit)
+        reloadWidgets()
     }
 
     func archiveHabit(_ habit: Habit) {
@@ -55,6 +64,7 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.cancelReminders(for: habit)
+        reloadWidgets()
     }
 
     func unarchiveHabit(_ habit: Habit) {
@@ -63,12 +73,32 @@ final class HabitService {
         habit.updatedAt = Date()
         try? modelContext.save()
         notificationManager.scheduleReminders(for: habit)
+        reloadWidgets()
     }
 
     func deleteHabit(_ habit: Habit) {
         notificationManager.cancelReminders(for: habit)
         modelContext.delete(habit)
         try? modelContext.save()
+        reloadWidgets()
+    }
+
+    /// Delete every habit, completion and note, and everything derived from them
+    func eraseAllData() {
+        try? modelContext.delete(model: Completion.self)
+        try? modelContext.delete(model: DailyNote.self)
+        try? modelContext.delete(model: Habit.self)
+        try? modelContext.save()
+        notificationManager.cancelAll()
+        reloadWidgets()
+    }
+
+    // MARK: - Reminders
+
+    /// Rebuild the rolling reminder window for all active habits.
+    /// Called whenever the app becomes active, so reminders never run out.
+    func refreshAllReminders() {
+        notificationManager.rescheduleAll(activeHabits())
     }
 
     // MARK: - Check-Off (Performance Critical — must be < 16ms)
@@ -84,14 +114,16 @@ final class HabitService {
             modelContext.delete(existing)
             try? modelContext.save()
             notificationManager.scheduleReminders(for: habit)
-                return false
+            reloadWidgets()
+            return false
         } else {
             // Complete
             let completion = Completion(habit: habit, date: date)
             modelContext.insert(completion)
             try? modelContext.save()
             notificationManager.cancelTodayReminder(for: habit)
-                return true
+            reloadWidgets()
+            return true
         }
     }
 

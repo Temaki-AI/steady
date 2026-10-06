@@ -35,10 +35,39 @@
 		E4406CF25DD5D0B5AFD27D71 /* Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE04141DDEE2F83BA095997 /* Completion.swift */; };
 		EACEE05814C5BDEAABA46071 /* SteadyFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D915D92088A4B7A1BBD8D2D1 /* SteadyFlowApp.swift */; };
 		AAAA000000000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000001 /* PrivacyInfo.xcprivacy */; };
+		BBBB000000000000000002 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB000000000000000001 /* SharedModelContainer.swift */; };
+		BBBB000000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB000000000000000001 /* SharedModelContainer.swift */; };
+		BBBB000000000000000004 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BDF7F9B04EC445E2456765 /* Habit.swift */; };
+		BBBB000000000000000005 /* Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE04141DDEE2F83BA095997 /* Completion.swift */; };
+		BBBB000000000000000006 /* HabitSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B47CDD810E2C6A478D98163 /* HabitSchedule.swift */; };
+		BBBB000000000000000007 /* DailyNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4AC4A588956D4089280CA0 /* DailyNote.swift */; };
+		BBBB000000000000000008 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED86B041B128269183A32E53 /* DesignSystem.swift */; };
+		CCCC00000000000000000003 /* SteadyFlowWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 44E7AB22C8B6BE49D13E6059 /* SteadyFlowWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CCCC00000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFBAB6F558C76E1E6FDB38DE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EFC7B978947FFBC6C4618475;
+			remoteInfo = SteadyFlowWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CCCC00000000000000000004 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CCCC00000000000000000003 /* SteadyFlowWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0AA898D7EBF6EBEBF9BCF7FF /* SteadyFlowWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteadyFlowWidget.swift; sourceTree = "<group>"; };
@@ -73,6 +102,7 @@
 		ED924298777DC7AF790EA86E /* HeatmapDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapDataProvider.swift; sourceTree = "<group>"; };
 		EDE04141DDEE2F83BA095997 /* Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completion.swift; sourceTree = "<group>"; };
 		AAAA000000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		BBBB000000000000000001 /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -205,6 +235,7 @@
 				C489EBA327A33631DB17F5C9 /* HapticEngine.swift */,
 				ED924298777DC7AF790EA86E /* HeatmapDataProvider.swift */,
 				36ADB0C7D8117191B97F486A /* NotificationManager.swift */,
+				BBBB000000000000000001 /* SharedModelContainer.swift */,
 				920E755C1122129DD44DF2A9 /* StreakCalculator.swift */,
 			);
 			path = Services;
@@ -236,10 +267,12 @@
 			buildPhases = (
 				797732454C0A16FF38771387 /* Sources */,
 				8E8C9B985050399EA2D99D02 /* Resources */,
+				CCCC00000000000000000004 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CCCC00000000000000000002 /* PBXTargetDependency */,
 			);
 			name = SteadyFlow;
 			packageProductDependencies = (
@@ -298,6 +331,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBBB000000000000000004 /* Habit.swift in Sources */,
+				BBBB000000000000000005 /* Completion.swift in Sources */,
+				BBBB000000000000000006 /* HabitSchedule.swift in Sources */,
+				BBBB000000000000000007 /* DailyNote.swift in Sources */,
+				BBBB000000000000000008 /* DesignSystem.swift in Sources */,
+				BBBB000000000000000003 /* SharedModelContainer.swift in Sources */,
 				8B51FD8485D63323B8442022 /* SteadyFlowWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -325,6 +364,7 @@
 				0719AB1DCC9B78E52CA3EE50 /* ProgressView.swift in Sources */,
 				4D99C7F6BD17A263E789FAC7 /* ScreenshotPreviews.swift in Sources */,
 				4E4E8B4864F784C2C1B844A0 /* SettingsView.swift in Sources */,
+				BBBB000000000000000002 /* SharedModelContainer.swift in Sources */,
 				EACEE05814C5BDEAABA46071 /* SteadyFlowApp.swift in Sources */,
 				B37A94A4B8721FEEE619889C /* StreakBadge.swift in Sources */,
 				DAEB49774F70804F6790D0CC /* StreakCalculator.swift in Sources */,
@@ -337,6 +377,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CCCC00000000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EFC7B978947FFBC6C4618475 /* SteadyFlowWidget */;
+			targetProxy = CCCC00000000000000000001 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -349,7 +394,8 @@
 				DEVELOPMENT_TEAM = 628QH4492F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
-				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				INFOPLIST_FILE = SteadyFlowWidget/Info.plist;
+				SKIP_INSTALL = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -430,6 +476,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
 				INFOPLIST_KEY_CFBundleDisplayName = "Steady Habits";
+				INFOPLIST_FILE = SteadyFlow/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -455,7 +502,8 @@
 				DEVELOPMENT_TEAM = 628QH4492F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
-				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				INFOPLIST_FILE = SteadyFlowWidget/Info.plist;
+				SKIP_INSTALL = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -543,6 +591,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
 				INFOPLIST_KEY_CFBundleDisplayName = "Steady Habits";
+				INFOPLIST_FILE = SteadyFlow/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

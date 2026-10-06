@@ -132,7 +132,7 @@ struct HabitFormView: View {
                     if reminders.isEmpty {
                         Button("Add Reminder") {
                             Task {
-                                let _ = await NotificationManager().requestPermission()
+                                let _ = await NotificationManager.shared.requestPermission()
                             }
                             reminders.append(ReminderTime(hour: 9, minute: 0))
                         }
