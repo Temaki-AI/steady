@@ -478,7 +478,7 @@ struct ScreenshotHeatmap: View {
         var result: [[Int]] = []
         for week in 0..<26 {
             var days: [Int] = []
-            for day in 0..<7 {
+            for _ in 0..<7 {
                 // More consistent recent weeks, sparser older weeks
                 let recency = Double(week) / 26.0
                 let base = 0.3 + recency * 0.5

@@ -15,6 +15,11 @@ enum HabitColor: String, Codable, CaseIterable {
     case brown = "#A1887F"
     case gray = "#90A4AE"
     case lime = "#AED581"
+
+    /// Spoken name for VoiceOver
+    var displayName: String {
+        String(describing: self).capitalized
+    }
 }
 
 @Model
@@ -95,6 +100,12 @@ final class Habit {
         completions ?? []
     }
 
+    /// Distinct completed days ("yyyy-MM-dd"). CloudKit sync can produce two
+    /// completions for the same day (checked off on two devices), so count days, not records.
+    var completedDates: Set<String> {
+        Set(safeCompletions.map(\.date))
+    }
+
     /// Check if this habit is scheduled for a given date
     func isScheduled(for date: Date) -> Bool {
         schedule.isScheduled(for: date, createdAt: createdAt)
@@ -119,8 +130,12 @@ final class Habit {
 
     // MARK: - Date Helpers
 
+    /// Storage keys must be identical on every device regardless of the user's
+    /// calendar or region, so pin the Gregorian calendar and POSIX locale.
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = .current
         return formatter

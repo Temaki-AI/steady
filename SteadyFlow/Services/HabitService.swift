@@ -7,7 +7,6 @@ import WidgetKit
 @Observable
 final class HabitService {
     private let modelContext: ModelContext
-    private let streakCalculator = StreakCalculator()
     private let notificationManager = NotificationManager.shared
 
     init(modelContext: ModelContext) {
@@ -109,9 +108,10 @@ final class HabitService {
     func toggleCompletion(for habit: Habit, on date: Date = Date()) -> Bool {
         let dateString = Habit.dateString(from: date)
 
-        if let existing = habit.safeCompletions.first(where: { $0.date == dateString }) {
-            // Uncomplete
-            modelContext.delete(existing)
+        let existing = habit.safeCompletions.filter { $0.date == dateString }
+        if !existing.isEmpty {
+            // Uncomplete (remove duplicates synced from other devices too)
+            existing.forEach(modelContext.delete)
             try? modelContext.save()
             notificationManager.scheduleReminders(for: habit)
             reloadWidgets()
@@ -162,8 +162,6 @@ final class HabitService {
     }
 
     func saveDailyNote(text: String, for date: Date) {
-        let dateString = Habit.dateString(from: date)
-
         if let existing = dailyNote(for: date) {
             existing.text = String(text.prefix(500))
             existing.updatedAt = Date()

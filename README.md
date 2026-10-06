@@ -6,35 +6,25 @@
 
 ## Quick Start (Xcode)
 
-### Option 1: Create Xcode Project (Recommended)
-
-1. Open **Xcode 15+**
-2. File → New → Project → **iOS App**
-3. Product Name: `SteadyFlow`
-4. Bundle Identifier: `com.steadyflow.habits`
-5. Interface: **SwiftUI**
-6. Storage: **SwiftData**
-7. Check: **Include Widget Extension**
-8. Minimum Deployment: **iOS 17.0**
-9. Delete the auto-generated files (ContentView.swift, Item.swift, etc.)
-10. Drag the `SteadyFlow/` folder into the project navigator
-11. Drag the `SteadyFlowWidget/` folder into the widget extension target
-12. Build & Run
-
-### Option 2: Clone and Open
+1. Clone the repo and open `SteadyFlow.xcodeproj` in **Xcode 15+** (iOS 17+ deployment target)
+2. Select the **SteadyFlow** and **SteadyFlowWidget** targets → Signing & Capabilities → set your Team
+3. Build & Run the **SteadyFlow** scheme (the widget is embedded automatically)
 
 ```bash
 git clone https://github.com/Temaki-AI/steady.git
-cd steady
-# Then follow Option 1 steps 2-12 above
 ```
 
-### Required Xcode Configuration
+The project is the source of truth; there is no project generator. Capabilities already
+configured in the project:
 
-1. **App Group**: Add `group.com.steadyflow.habits` to both app and widget targets
-2. **CloudKit**: Enable iCloud capability → check CloudKit → container: `iCloud.com.steadyflow.habits`
-3. **Push Notifications**: Enable for background refresh (notifications)
-4. **Background Modes**: Enable Background Fetch
+- **App Group** `group.com.steadyflow.habits` on the app and widget (shared SwiftData store)
+- **iCloud / CloudKit** container `iCloud.com.steadyflow.habits`
+- **Push Notifications** and **Background Modes → Remote notifications** (CloudKit sync pushes)
+
+### Before releasing
+
+- In the CloudKit Console, **deploy the schema to Production**. TestFlight and App Store
+  builds use the Production environment and won't sync until it's deployed.
 
 ## Architecture
 
@@ -57,7 +47,8 @@ SteadyFlow/
 │   ├── HabitService.swift        # Business logic
 │   ├── StreakCalculator.swift    # Streak computation
 │   ├── HeatmapDataProvider.swift # Contribution graph data
-│   ├── NotificationManager.swift # Smart notification scheduling
+│   ├── NotificationManager.swift # Rolling 7-day reminder scheduling
+│   ├── SharedModelContainer.swift # SwiftData store shared with the widget
 │   └── ExportService.swift       # JSON/CSV export
 SteadyFlowWidget/
 └── SteadyFlowWidget.swift        # Home screen widgets

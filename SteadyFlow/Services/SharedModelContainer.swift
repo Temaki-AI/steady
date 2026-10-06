@@ -6,11 +6,19 @@ import SwiftData
 enum SharedModelContainer {
     static let appGroupID = "group.com.steadyflow.habits"
 
-    /// URL for the shared SwiftData store inside the App Group container
-    static var storeURL: URL {
-        let container = FileManager.default.containerURL(
+    struct AppGroupUnavailable: Error {}
+
+    /// Set once at launch when the app had to fall back to a temporary in-memory store
+    nonisolated(unsafe) static var isUsingTemporaryStore = false
+
+    /// URL for the shared SwiftData store inside the App Group container.
+    /// Throws (rather than crashing) if the App Group isn't provisioned.
+    static func storeURL() throws -> URL {
+        guard let container = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: appGroupID
-        )!
+        ) else {
+            throw AppGroupUnavailable()
+        }
         return container.appending(path: "SteadyFlow.store")
     }
 
@@ -25,7 +33,7 @@ enum SharedModelContainer {
     static func makeAppContainer() throws -> ModelContainer {
         let config = ModelConfiguration(
             schema: schema,
-            url: storeURL,
+            url: try storeURL(),
             cloudKitDatabase: .automatic
         )
         return try ModelContainer(for: schema, configurations: [config])
@@ -35,7 +43,7 @@ enum SharedModelContainer {
     static func makeWidgetContainer() throws -> ModelContainer {
         let config = ModelConfiguration(
             schema: schema,
-            url: storeURL,
+            url: try storeURL(),
             cloudKitDatabase: .none
         )
         return try ModelContainer(for: schema, configurations: [config])

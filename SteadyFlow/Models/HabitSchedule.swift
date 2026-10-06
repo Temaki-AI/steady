@@ -68,6 +68,11 @@ enum Weekday: Int, Codable, Hashable, CaseIterable {
         }
     }
 
+    /// Localized full name, e.g. "Monday" (used for VoiceOver)
+    var fullName: String {
+        Calendar.current.weekdaySymbols[rawValue - 1]
+    }
+
     init(from calendarWeekday: Int) {
         self = Weekday(rawValue: calendarWeekday) ?? .sunday
     }

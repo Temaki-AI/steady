@@ -21,12 +21,17 @@ struct TodayView: View {
         Dictionary(grouping: habits, by: \.timeOfDay)
     }
 
+    /// Habits that exist and are due on the selected date
+    private var scheduledHabits: [Habit] {
+        habits.filter { $0.isScheduled(for: selectedDate) && $0.existedOn(date: selectedDate) }
+    }
+
     private var todayCompletedCount: Int {
-        habits.filter { $0.isCompleted(for: selectedDate) }.count
+        scheduledHabits.filter { $0.isCompleted(for: selectedDate) }.count
     }
 
     private var todayScheduledCount: Int {
-        habits.filter { $0.isScheduled(for: selectedDate) && $0.existedOn(date: selectedDate) }.count
+        scheduledHabits.count
     }
 
     var body: some View {
@@ -214,14 +219,10 @@ struct TodayView: View {
         let result = streakCalculator.calculate(for: habit)
         streaks[habit.id] = result.current
 
-        // Celebrate when ALL habits for the day are done
+        // Celebrate when every habit due that day is done
         if wasCompleted {
-            let dateString = Habit.dateString(from: selectedDate)
-            let activeHabits = service.activeHabits()
-            let allDone = activeHabits.allSatisfy { h in
-                h.safeCompletions.contains { $0.date == dateString }
-            }
-            if allDone && !activeHabits.isEmpty {
+            let due = scheduledHabits
+            if !due.isEmpty && due.allSatisfy({ $0.isCompleted(for: selectedDate) }) {
                 HapticEngine.allComplete()
             }
         }
@@ -324,16 +325,17 @@ struct DailyNoteSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        let service = HabitService(modelContext: modelContext)
-                        service.saveDailyNote(text: text, for: date)
-                        dismiss()
-                    }
+                    Button("Done") { dismiss() }
                 }
             }
             .onAppear {
                 let service = HabitService(modelContext: modelContext)
                 text = service.dailyNote(for: date)?.text ?? ""
+            }
+            // Save however the sheet closes — Done or swipe down
+            .onDisappear {
+                let service = HabitService(modelContext: modelContext)
+                service.saveDailyNote(text: text, for: date)
             }
         }
         .presentationDetents([.medium])

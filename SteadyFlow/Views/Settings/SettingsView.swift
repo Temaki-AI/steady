@@ -30,26 +30,31 @@ struct SettingsView: View {
                         Spacer()
                         LazyVGrid(columns: Array(repeating: GridItem(.fixed(36)), count: 4), spacing: 10) {
                             ForEach(HabitColor.allCases.prefix(8), id: \.self) { color in
-                                Circle()
-                                    .fill(Color(hex: color.rawValue))
-                                    .frame(width: 32, height: 32)
-                                    .overlay {
-                                        Circle()
-                                            .strokeBorder(Color.primary.opacity(0.2), lineWidth: color.rawValue == accentColorHex ? 2 : 0)
-                                    }
-                                    .overlay {
-                                        if color.rawValue == accentColorHex {
-                                            Image(systemName: "checkmark")
-                                                .font(.caption.bold())
-                                                .foregroundStyle(.white)
-                                                .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
+                                Button {
+                                    accentColorHex = color.rawValue
+                                } label: {
+                                    Circle()
+                                        .fill(Color(hex: color.rawValue))
+                                        .frame(width: 32, height: 32)
+                                        .overlay {
+                                            Circle()
+                                                .strokeBorder(Color.primary.opacity(0.2), lineWidth: color.rawValue == accentColorHex ? 2 : 0)
                                         }
-                                    }
-                                    .scaleEffect(color.rawValue == accentColorHex ? 1.1 : 1.0)
-                                    .animation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.6)), value: accentColorHex)
-                                    .onTapGesture {
-                                        accentColorHex = color.rawValue
-                                    }
+                                        .overlay {
+                                            if color.rawValue == accentColorHex {
+                                                Image(systemName: "checkmark")
+                                                    .font(.caption.bold())
+                                                    .foregroundStyle(.white)
+                                                    .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
+                                            }
+                                        }
+                                        .scaleEffect(color.rawValue == accentColorHex ? 1.1 : 1.0)
+                                        .animation(DesignSystem.Animation.respectingMotion(.spring(response: 0.3, dampingFraction: 0.6)), value: accentColorHex)
+                                }
+                                // Plain style so each button gets its own tap inside the List row
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(color.displayName)
+                                .accessibilityAddTraits(color.rawValue == accentColorHex ? .isSelected : [])
                             }
                         }
                         .frame(width: 160)

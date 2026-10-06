@@ -32,8 +32,6 @@ struct HeatmapView: View {
         guard let newestDate = pastData.max(by: { $0.date < $1.date })?.date,
               let oldestDate = pastData.min(by: { $0.date < $1.date })?.date else { return [] }
 
-        let fmt = DateFormatter()
-        fmt.dateFormat = "yyyy-MM-dd"
         let titleFmt = DateFormatter()
         titleFmt.dateFormat = "MMM"
 
@@ -62,7 +60,7 @@ struct HeatmapView: View {
                 if date > Date() {
                     week.append(nil)
                 } else {
-                    week.append(lk[fmt.string(from: date)])
+                    week.append(lk[Habit.dateString(from: date)])
                 }
             }
             allWeeks.append((weekStart, week))

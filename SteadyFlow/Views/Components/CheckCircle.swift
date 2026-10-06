@@ -8,6 +8,8 @@ struct CheckCircle: View {
     let color: Color
     let size: CGFloat
     let icon: String
+    /// Spoken by VoiceOver, e.g. the habit name
+    let accessibilityName: String
     let onToggle: () -> Void
 
     @State private var bounceScale: CGFloat = 1.0
@@ -17,12 +19,14 @@ struct CheckCircle: View {
         color: Color = .green,
         size: CGFloat = 36,
         icon: String = "checkmark",
+        accessibilityName: String = "Habit",
         onToggle: @escaping () -> Void
     ) {
         self.isCompleted = isCompleted
         self.color = color
         self.size = size
         self.icon = icon
+        self.accessibilityName = accessibilityName
         self.onToggle = onToggle
     }
 
@@ -77,6 +81,9 @@ struct CheckCircle: View {
         .buttonStyle(.plain)
         .frame(width: max(44, size), height: max(44, size)) // Min 44pt tap target
         .contentShape(Rectangle())
+        .accessibilityLabel(accessibilityName)
+        .accessibilityValue(isCompleted ? "Completed" : "Not completed")
+        .accessibilityHint(isCompleted ? "Double-tap to mark as not done" : "Double-tap to mark as done")
     }
 }
 

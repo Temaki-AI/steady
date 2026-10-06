@@ -22,6 +22,8 @@ struct StreakBadge: View {
                 Capsule()
                     .fill(DesignSystem.Colors.accentWarm.opacity(0.15))
             )
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(count == 1 ? "1 day streak" : "\(count) day streak")
         }
     }
 }

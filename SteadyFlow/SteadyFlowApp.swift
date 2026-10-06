@@ -7,8 +7,10 @@ struct SteadyFlowApp: App {
         do {
             return try SharedModelContainer.makeAppContainer()
         } catch {
-            // Fallback to in-memory store so the app doesn't crash
+            // Fall back to an in-memory store so the app still opens,
+            // and tell the user nothing will be saved (see ContentView)
             print("⚠️ Persistent store failed: \(error). Using in-memory store.")
+            SharedModelContainer.isUsingTemporaryStore = true
             let fallback = ModelConfiguration(
                 schema: SharedModelContainer.schema,
                 isStoredInMemoryOnly: true
@@ -45,6 +47,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab = 0
+    @State private var showStorageAlert = SharedModelContainer.isUsingTemporaryStore
     @AppStorage("accentColorHex") private var accentColorHex = "#81C784"
 
     private var accentColor: Color {
@@ -81,5 +84,10 @@ struct ContentView: View {
             }
         }
         .tint(accentColor)
+        .alert("Your habits couldn't be loaded", isPresented: $showStorageAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Steady Habits couldn't open its data, so changes you make now won't be saved. Please close and reopen the app. If this keeps happening, contact support.")
+        }
     }
 }

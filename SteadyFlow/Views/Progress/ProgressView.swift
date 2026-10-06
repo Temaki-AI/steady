@@ -9,7 +9,7 @@ struct SteadyFlowProgressView: View {
     private let streakCalculator = StreakCalculator()
 
     private var todayCompleted: Int {
-        habits.filter { $0.isCompleted(for: Date()) }.count
+        habits.filter { $0.isScheduled(for: Date()) && $0.isCompleted(for: Date()) }.count
     }
 
     private var todayScheduled: Int {
@@ -23,7 +23,9 @@ struct SteadyFlowProgressView: View {
         for dayOffset in 0..<7 {
             guard let date = calendar.date(byAdding: .day, value: dayOffset, to: startOfWeek),
                   date <= Date() else { continue }
-            count += habits.filter { $0.isCompleted(for: date) }.count
+            count += habits.filter {
+                $0.isScheduled(for: date) && $0.existedOn(date: date) && $0.isCompleted(for: date)
+            }.count
         }
         return count
     }
@@ -155,35 +157,25 @@ struct HabitStatRow: View {
         streakCalculator.calculate(for: habit)
     }
     
+    /// Share of scheduled days completed over the last 30 days (including today)
     private var completionRate: Int {
-        let total = habit.safeCompletions.count
-        guard total > 0 else { return 0 }
-        
-        // Calculate scheduled days in the past 30 days
         let calendar = Calendar.current
-        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        let completed = habit.completedDates
         var scheduledDays = 0
-        
+        var completedDays = 0
+
         for dayOffset in 0..<30 {
-            if let date = calendar.date(byAdding: .day, value: dayOffset, to: thirtyDaysAgo),
-               date <= Date(),
-               habit.isScheduled(for: date),
-               habit.existedOn(date: date) {
-                scheduledDays += 1
+            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: Date()),
+                  habit.existedOn(date: date),
+                  habit.isScheduled(for: date) else { continue }
+            scheduledDays += 1
+            if completed.contains(Habit.dateString(from: date)) {
+                completedDays += 1
             }
         }
-        
+
         guard scheduledDays > 0 else { return 0 }
-        
-        let fmt = DateFormatter()
-        fmt.dateFormat = "yyyy-MM-dd"
-        let startStr = fmt.string(from: thirtyDaysAgo)
-        let endStr = fmt.string(from: Date())
-        let completedInPeriod = habit.safeCompletions.filter {
-            $0.date >= startStr && $0.date <= endStr
-        }.count
-        
-        return min(100, Int((Double(completedInPeriod) / Double(scheduledDays)) * 100))
+        return Int((Double(completedDays) / Double(scheduledDays)) * 100)
     }
     
     private var habitColor: Color {
@@ -257,7 +249,7 @@ struct HabitDetailView: View {
     }
 
     private var totalCompletions: Int {
-        habit.safeCompletions.count
+        habit.completedDates.count
     }
     
     private var habitColor: Color {

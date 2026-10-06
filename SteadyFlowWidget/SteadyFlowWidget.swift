@@ -2,6 +2,7 @@ import WidgetKit
 import SwiftUI
 import SwiftData
 import AppIntents
+import UserNotifications
 
 // MARK: - Widget Provider
 
@@ -19,16 +20,20 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SteadyFlowEntry>) -> Void) {
-        // Read from shared SwiftData store
-        let entry = loadEntry()
+        let now = Date()
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now)) ?? now
 
-        // Refresh hourly as fallback
-        let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date()
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-        completion(timeline)
+        // Include a fresh entry for midnight so the widget flips to the new day on time,
+        // instead of showing yesterday's check-offs until the next reload
+        let entries = [loadEntry(for: now), loadEntry(for: tomorrow)]
+
+        // Refresh hourly as a fallback (e.g. for changes synced from other devices)
+        let nextHour = calendar.date(byAdding: .hour, value: 1, to: now) ?? now
+        completion(Timeline(entries: entries, policy: .after(min(nextHour, tomorrow))))
     }
 
-    private func loadEntry() -> SteadyFlowEntry {
+    private func loadEntry(for day: Date = Date()) -> SteadyFlowEntry {
         do {
             let container = try SharedModelContainer.makeWidgetContainer()
             let context = ModelContext(container)
@@ -38,23 +43,22 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
                 sortBy: [SortDescriptor(\.position)]
             )
             let habits = try context.fetch(descriptor)
-            let today = Date()
 
             let widgetHabits = habits
-                .filter { $0.isScheduled(for: today) }
+                .filter { $0.isScheduled(for: day) }
                 .map { habit in
                     WidgetHabit(
                         id: habit.id,
                         name: habit.name,
                         icon: habit.icon,
                         colorHex: habit.colorHex,
-                        isCompleted: habit.isCompleted(for: today)
+                        isCompleted: habit.isCompleted(for: day)
                     )
                 }
 
             let completed = widgetHabits.filter(\.isCompleted).count
             return SteadyFlowEntry(
-                date: today,
+                date: day,
                 completed: completed,
                 total: widgetHabits.count,
                 habits: widgetHabits
@@ -92,8 +96,10 @@ struct WidgetEntryView: View {
         switch family {
         case .systemSmall:
             SmallWidgetView(entry: entry)
+        case .systemLarge:
+            MediumWidgetView(entry: entry, maxHabits: 9)
         default:
-            MediumWidgetView(entry: entry)
+            MediumWidgetView(entry: entry, maxHabits: 4)
         }
     }
 }
@@ -163,6 +169,8 @@ struct SmallWidgetView: View {
 
 struct MediumWidgetView: View {
     let entry: SteadyFlowEntry
+    /// How many rows fit: 4 in medium, 9 in large
+    let maxHabits: Int
     
     private var primaryGreen: Color {
         Color(hex: "6B9B7D")
@@ -183,7 +191,7 @@ struct MediumWidgetView: View {
             }
             .padding(.bottom, 4)
 
-            ForEach(entry.habits.prefix(4)) { habit in
+            ForEach(entry.habits.prefix(maxHabits)) { habit in
                 HStack(spacing: 10) {
                     // Interactive check-off button
                     Button(intent: CheckOffHabitIntent(habitId: habit.id.uuidString)) {
@@ -192,6 +200,8 @@ struct MediumWidgetView: View {
                             .foregroundStyle(habit.isCompleted ? (Color(hex: habit.colorHex)) : Color.secondary.opacity(0.4))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(habit.name)
+                    .accessibilityValue(habit.isCompleted ? "Completed" : "Not completed")
 
                     Image(systemName: habit.icon)
                         .font(.subheadline)
@@ -208,7 +218,13 @@ struct MediumWidgetView: View {
                 }
                 .opacity(habit.isCompleted ? 0.6 : 1.0)
             }
-            
+
+            if entry.habits.count > maxHabits {
+                Text("+\(entry.habits.count - maxHabits) more")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Spacer()
         }
         .padding()
@@ -252,11 +268,21 @@ struct CheckOffHabitIntent: AppIntent {
 
             let dateString = Habit.dateString(from: Date())
 
-            if let existing = habit.safeCompletions.first(where: { $0.date == dateString }) {
-                context.delete(existing)
+            let existing = habit.safeCompletions.filter { $0.date == dateString }
+            if !existing.isEmpty {
+                existing.forEach(context.delete)
+                // Today's reminder comes back the next time the app opens
+                // (HabitService.refreshAllReminders)
             } else {
                 let completion = Completion(habit: habit, date: Date())
                 context.insert(completion)
+                // Done for today: drop today's pending reminders for this habit
+                let center = UNUserNotificationCenter.current()
+                let todayPrefix = "\(habit.id.uuidString)-\(dateString)"
+                let pending = await center.pendingNotificationRequests()
+                center.removePendingNotificationRequests(
+                    withIdentifiers: pending.map(\.identifier).filter { $0.hasPrefix(todayPrefix) }
+                )
             }
 
             try context.save()

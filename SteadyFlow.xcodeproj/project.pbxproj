@@ -16,7 +16,6 @@
 		47DAD88AE65F4488A478BB22 /* IconPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60AC0F0E71B28313687263 /* IconPickerView.swift */; };
 		4D99C7F6BD17A263E789FAC7 /* ScreenshotPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CB1E85FFF2725B1F55DD2 /* ScreenshotPreviews.swift */; };
 		4E4E8B4864F784C2C1B844A0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51E2A212A443A0E4386DD2 /* SettingsView.swift */; };
-		4FB50F184D46ADE6A356F774 /* SwipeableHabitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */; };
 		50F9B38CE5A3359ED096B970 /* DailyNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4AC4A588956D4089280CA0 /* DailyNote.swift */; };
 		5F477028AC43BEA012A7C59C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B965B05067A111F15A16C17 /* Assets.xcassets */; };
 		60F1F563F1CACE6A82FB76CF /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37684189A69E617DB6EE2C4 /* ExportService.swift */; };
@@ -85,7 +84,6 @@
 		974AF7855D7D34C736C204CF /* CheckCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCircle.swift; sourceTree = "<group>"; };
 		9778372760BA56D65A92A827 /* SteadyFlowWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SteadyFlowWidget.entitlements; sourceTree = "<group>"; };
 		AE4AC4A588956D4089280CA0 /* DailyNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNote.swift; sourceTree = "<group>"; };
-		AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableHabitRow.swift; sourceTree = "<group>"; };
 		B4165B3B2261561306CE8E5A /* StreakBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakBadge.swift; sourceTree = "<group>"; };
 		B4F1686DD2D56C643B3A697E /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
 		BD4D5495714A5DDC2360A87E /* HabitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitService.swift; sourceTree = "<group>"; };
@@ -154,7 +152,6 @@
 			children = (
 				974AF7855D7D34C736C204CF /* CheckCircle.swift */,
 				B4165B3B2261561306CE8E5A /* StreakBadge.swift */,
-				AEA7B100A1ADCD50F47062ED /* SwipeableHabitRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -368,7 +365,6 @@
 				EACEE05814C5BDEAABA46071 /* SteadyFlowApp.swift in Sources */,
 				B37A94A4B8721FEEE619889C /* StreakBadge.swift in Sources */,
 				DAEB49774F70804F6790D0CC /* StreakCalculator.swift in Sources */,
-				4FB50F184D46ADE6A356F774 /* SwipeableHabitRow.swift in Sources */,
 				A62062BB8DDB32633BB9D453 /* TimeGroupView.swift in Sources */,
 				35A9F60C1DD335C4D4C00997 /* TodayView.swift in Sources */,
 			);

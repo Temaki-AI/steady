@@ -34,12 +34,21 @@ struct TimeGroupView: View {
         }
     }
 
+    /// Habits due on `date`. Unscheduled habits still show (dimmed) but don't count.
+    private var scheduledHabits: [Habit] {
+        habits.filter { $0.isScheduled(for: date) }
+    }
+
     private var completedCount: Int {
-        habits.filter { $0.isCompleted(for: date) }.count
+        scheduledHabits.filter { $0.isCompleted(for: date) }.count
     }
 
     private var allDone: Bool {
-        !habits.isEmpty && completedCount == habits.count
+        !scheduledHabits.isEmpty && completedCount == scheduledHabits.count
+    }
+
+    private var progress: CGFloat {
+        scheduledHabits.isEmpty ? 0 : CGFloat(completedCount) / CGFloat(scheduledHabits.count)
     }
 
     var body: some View {
@@ -65,7 +74,7 @@ struct TimeGroupView: View {
 
                             Spacer()
 
-                            Text("\(completedCount)/\(habits.count)")
+                            Text("\(completedCount)/\(scheduledHabits.count)")
                                 .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundStyle(.secondary)
@@ -84,7 +93,7 @@ struct TimeGroupView: View {
 
                                 Capsule()
                                     .fill(allDone ? DesignSystem.Colors.primaryGreen : DesignSystem.Colors.primaryGreen.opacity(0.6))
-                                    .frame(width: geometry.size.width * CGFloat(completedCount) / CGFloat(habits.count), height: 3)
+                                    .frame(width: geometry.size.width * progress, height: 3)
                             }
                         }
                         .frame(height: 3)
@@ -110,6 +119,9 @@ struct TimeGroupView: View {
                             onToggle: { onToggle(habit) }
                         )
                         .onTapGesture {
+                            onEdit(habit)
+                        }
+                        .accessibilityAction(named: "Edit") {
                             onEdit(habit)
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {

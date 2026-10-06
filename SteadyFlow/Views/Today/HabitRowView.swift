@@ -25,6 +25,7 @@ struct HabitRowView: View {
                 isCompleted: isCompleted,
                 color: habitColor,
                 icon: habit.icon,
+                accessibilityName: habit.name,
                 onToggle: onToggle
             )
 

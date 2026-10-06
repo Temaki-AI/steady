@@ -65,17 +65,25 @@ struct HabitFormView: View {
                     // Color palette
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(HabitColor.allCases, id: \.self) { c in
-                            Circle()
-                                .fill(Color(hex: c.rawValue))
-                                .frame(width: 32, height: 32)
-                                .overlay {
-                                    if c == color {
-                                        Image(systemName: "checkmark")
-                                            .font(.caption.bold())
-                                            .foregroundStyle(.white)
+                            Button {
+                                HapticEngine.colorPick()
+                                color = c
+                            } label: {
+                                Circle()
+                                    .fill(Color(hex: c.rawValue))
+                                    .frame(width: 32, height: 32)
+                                    .overlay {
+                                        if c == color {
+                                            Image(systemName: "checkmark")
+                                                .font(.caption.bold())
+                                                .foregroundStyle(.white)
+                                        }
                                     }
-                                }
-                                .onTapGesture { HapticEngine.colorPick(); color = c }
+                            }
+                            // Plain style so each button gets its own tap inside the Form row
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(c.displayName)
+                            .accessibilityAddTraits(c == color ? .isSelected : [])
                         }
                     }
                     .padding(.vertical, 4)
@@ -96,16 +104,20 @@ struct HabitFormView: View {
                         HStack(spacing: 8) {
                             ForEach(Weekday.allCases, id: \.self) { day in
                                 let isSelected = selectedDays.contains(day)
-                                Text(String(day.shortName.prefix(1)))
-                                    .font(.caption.bold())
-                                    .frame(width: 36, height: 36)
-                                    .background(isSelected ? (Color(hex: color.rawValue)) : Color.secondary.opacity(0.15))
-                                    .foregroundStyle(isSelected ? .white : .primary)
-                                    .clipShape(Circle())
-                                    .onTapGesture {
-                                        if isSelected { selectedDays.remove(day) }
-                                        else { selectedDays.insert(day) }
-                                    }
+                                Button {
+                                    if isSelected { selectedDays.remove(day) }
+                                    else { selectedDays.insert(day) }
+                                } label: {
+                                    Text(String(day.shortName.prefix(1)))
+                                        .font(.caption.bold())
+                                        .frame(width: 36, height: 36)
+                                        .background(isSelected ? (Color(hex: color.rawValue)) : Color.secondary.opacity(0.15))
+                                        .foregroundStyle(isSelected ? .white : .primary)
+                                        .clipShape(Circle())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(day.fullName)
+                                .accessibilityAddTraits(isSelected ? .isSelected : [])
                             }
                         }
                     case .timesPerWeek:
@@ -137,31 +149,36 @@ struct HabitFormView: View {
                             reminders.append(ReminderTime(hour: 9, minute: 0))
                         }
                     } else {
-                        ForEach(reminders.indices, id: \.self) { index in
+                        // Keyed by reminder id, not index, so deleting a row can't
+                        // leave a binding pointing past the end of the array
+                        ForEach($reminders) { $reminder in
                             HStack {
                                 DatePicker(
                                     "Time",
                                     selection: Binding(
                                         get: {
                                             Calendar.current.date(from: DateComponents(
-                                                hour: reminders[index].hour,
-                                                minute: reminders[index].minute
+                                                hour: reminder.hour,
+                                                minute: reminder.minute
                                             )) ?? Date()
                                         },
                                         set: { newDate in
-                                            reminders[index].hour = Calendar.current.component(.hour, from: newDate)
-                                            reminders[index].minute = Calendar.current.component(.minute, from: newDate)
+                                            reminder.hour = Calendar.current.component(.hour, from: newDate)
+                                            reminder.minute = Calendar.current.component(.minute, from: newDate)
                                         }
                                     ),
                                     displayedComponents: .hourAndMinute
                                 )
 
                                 Button(role: .destructive) {
-                                    reminders.remove(at: index)
+                                    let id = reminder.id
+                                    reminders.removeAll { $0.id == id }
                                 } label: {
                                     Image(systemName: "trash")
                                         .font(.caption)
                                 }
+                                .buttonStyle(.borderless)
+                                .accessibilityLabel("Delete reminder")
                             }
                         }
 
@@ -213,7 +230,7 @@ struct HabitFormView: View {
             habit.reminders = reminders
             service.updateHabit(habit)
         } else {
-            service.createHabit(
+            _ = service.createHabit(
                 name: name,
                 icon: icon,
                 color: color,
