@@ -42,6 +42,7 @@
 		BBBB000000000000000007 /* DailyNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4AC4A588956D4089280CA0 /* DailyNote.swift */; };
 		BBBB000000000000000008 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED86B041B128269183A32E53 /* DesignSystem.swift */; };
 		CCCC00000000000000000003 /* SteadyFlowWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 44E7AB22C8B6BE49D13E6059 /* SteadyFlowWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CCCC00000000000000000006 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CCCC00000000000000000005 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 		EDE04141DDEE2F83BA095997 /* Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completion.swift; sourceTree = "<group>"; };
 		AAAA000000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BBBB000000000000000001 /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
+		CCCC00000000000000000005 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -159,6 +161,7 @@
 		669A63A04585A6DE515242E6 /* SteadyFlowWidget */ = {
 			isa = PBXGroup;
 			children = (
+				CCCC00000000000000000005 /* PrivacyInfo.xcprivacy */,
 				9778372760BA56D65A92A827 /* SteadyFlowWidget.entitlements */,
 				0AA898D7EBF6EBEBF9BCF7FF /* SteadyFlowWidget.swift */,
 			);
@@ -246,6 +249,7 @@
 			buildConfigurationList = 7034DA9B38CDE96E4FF82E77 /* Build configuration list for PBXNativeTarget "SteadyFlowWidget" */;
 			buildPhases = (
 				6B901BD66485CBB6A4269CC3 /* Sources */,
+				CCCC00000000000000000007 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -318,6 +322,14 @@
 			files = (
 				5F477028AC43BEA012A7C59C /* Assets.xcassets in Resources */,
 				AAAA000000000000000002 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCCC00000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CCCC00000000000000000006 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

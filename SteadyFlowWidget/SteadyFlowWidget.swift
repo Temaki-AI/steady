@@ -45,7 +45,7 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
             let habits = try context.fetch(descriptor)
 
             let widgetHabits = habits
-                .filter { $0.isScheduled(for: day) }
+                .filter { $0.isDue(on: day) }
                 .map { habit in
                     WidgetHabit(
                         id: habit.id,

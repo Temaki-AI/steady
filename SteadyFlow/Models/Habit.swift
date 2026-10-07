@@ -111,6 +111,51 @@ final class Habit {
         schedule.isScheduled(for: date, createdAt: createdAt)
     }
 
+    // MARK: - Weekly / Monthly Targets
+
+    /// Calendar for "per week" periods. Honors the week-start setting, which
+    /// lives in the App Group defaults so the widget agrees with the app.
+    static var periodCalendar: Calendar {
+        var calendar = Calendar.current
+        let firstDay = UserDefaults.shared.integer(forKey: "firstDayOfWeek")
+        if (1...7).contains(firstDay) {
+            calendar.firstWeekday = firstDay
+        }
+        return calendar
+    }
+
+    /// The week or month containing `date`, for habits with a periodic target
+    func targetPeriod(containing date: Date) -> DateInterval? {
+        guard let target = schedule.periodTarget else { return nil }
+        return Self.periodCalendar.dateInterval(of: target.period.calendarComponent, for: date)
+    }
+
+    /// Distinct days completed within `period`, optionally only days before `cutoff`
+    func completedDays(in period: DateInterval, before cutoff: Date? = nil) -> Int {
+        let start = Self.dateString(from: period.start)
+        let end = Self.dateString(from: cutoff ?? period.end) // exclusive
+        return completedDates.filter { $0 >= start && $0 < end }.count
+    }
+
+    /// Progress toward the target in the period containing `date`, e.g. 2 of 3 this week
+    func periodProgress(for date: Date) -> (done: Int, target: Int, period: TargetPeriod)? {
+        guard let target = schedule.periodTarget,
+              let period = targetPeriod(containing: date) else { return nil }
+        return (completedDays(in: period), target.count, target.period)
+    }
+
+    /// Whether the habit counts as due on `date`. Fixed-day habits follow their
+    /// schedule. Target habits are due until the period's target is met, so rest
+    /// days after hitting the target never count as misses.
+    func isDue(on date: Date) -> Bool {
+        guard let target = schedule.periodTarget,
+              let period = targetPeriod(containing: date) else {
+            return isScheduled(for: date)
+        }
+        if isCompleted(for: date) { return true }
+        return completedDays(in: period, before: date) < target.count
+    }
+
     /// Check if this habit is completed for a given date
     func isCompleted(for date: Date) -> Bool {
         let dateString = Self.dateString(from: date)

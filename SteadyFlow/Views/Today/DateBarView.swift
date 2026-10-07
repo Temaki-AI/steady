@@ -3,7 +3,7 @@ import SwiftUI
 /// Horizontal scrollable week date picker
 struct DateBarView: View {
     @Binding var selectedDate: Date
-    @AppStorage("firstDayOfWeek") private var firstDayOfWeek = 1
+    @AppStorage("firstDayOfWeek", store: .shared) private var firstDayOfWeek = 1
 
     private var calendar: Calendar {
         var cal = Calendar.current

@@ -4,7 +4,7 @@ import SwiftData
 /// Settings tab
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
-    @AppStorage("firstDayOfWeek") private var firstDayOfWeek = 1 // 1 = Sunday
+    @AppStorage("firstDayOfWeek", store: .shared) private var firstDayOfWeek = 1 // 1 = Sunday
     @AppStorage("accentColorHex") private var accentColorHex = "#81C784"
 
     @State private var showEraseConfirmation = false

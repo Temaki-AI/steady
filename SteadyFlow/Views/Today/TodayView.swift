@@ -13,7 +13,7 @@ struct TodayView: View {
     @State private var habitToEdit: Habit?
     @State private var habitToArchive: Habit?
     @State private var showArchiveConfirmation = false
-    @State private var streaks: [UUID: Int] = [:]
+    @State private var streaks: [UUID: StreakCalculator.StreakResult] = [:]
 
     private let streakCalculator = StreakCalculator()
 
@@ -23,7 +23,7 @@ struct TodayView: View {
 
     /// Habits that exist and are due on the selected date
     private var scheduledHabits: [Habit] {
-        habits.filter { $0.isScheduled(for: selectedDate) && $0.existedOn(date: selectedDate) }
+        habits.filter { $0.isDue(on: selectedDate) && $0.existedOn(date: selectedDate) }
     }
 
     private var todayCompletedCount: Int {
@@ -216,8 +216,7 @@ struct TodayView: View {
         let service = HabitService(modelContext: modelContext)
         let wasCompleted = service.toggleCompletion(for: habit, on: selectedDate)
         // Recalculate streak for this habit
-        let result = streakCalculator.calculate(for: habit)
-        streaks[habit.id] = result.current
+        streaks[habit.id] = streakCalculator.calculate(for: habit)
 
         // Celebrate when every habit due that day is done
         if wasCompleted {
@@ -237,9 +236,9 @@ struct TodayView: View {
 
     private func recalculateStreaks() {
         let calc = StreakCalculator()
-        var newStreaks: [UUID: Int] = [:]
+        var newStreaks: [UUID: StreakCalculator.StreakResult] = [:]
         for habit in habits {
-            newStreaks[habit.id] = calc.calculate(for: habit).current
+            newStreaks[habit.id] = calc.calculate(for: habit)
         }
         streaks = newStreaks
     }

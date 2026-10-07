@@ -33,6 +33,16 @@ struct HeatmapDataProvider {
             for habit in activeHabits {
                 guard habit.existedOn(date: date) else { continue }
 
+                // "Times per" habits have no fixed days: a day without a check-off
+                // isn't a miss, so they only show up on days they were done
+                if habit.schedule.periodTarget != nil {
+                    if habit.completedDates.contains(dateString) {
+                        scheduled += 1
+                        completed += 1
+                    }
+                    continue
+                }
+
                 if habit.isScheduled(for: date) {
                     scheduled += 1
                     if habit.safeCompletions.contains(where: { $0.date == dateString }) {

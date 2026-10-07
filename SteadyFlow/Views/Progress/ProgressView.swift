@@ -9,41 +9,45 @@ struct SteadyFlowProgressView: View {
     private let streakCalculator = StreakCalculator()
 
     private var todayCompleted: Int {
-        habits.filter { $0.isScheduled(for: Date()) && $0.isCompleted(for: Date()) }.count
+        habits.filter { $0.isDue(on: Date()) && $0.isCompleted(for: Date()) }.count
     }
 
     private var todayScheduled: Int {
-        habits.filter { $0.isScheduled(for: Date()) }.count
+        habits.filter { $0.isDue(on: Date()) }.count
     }
 
-    private var weekCompleted: Int {
-        let calendar = Calendar.current
-        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: Date())?.start ?? Date()
-        var count = 0
-        for dayOffset in 0..<7 {
-            guard let date = calendar.date(byAdding: .day, value: dayOffset, to: startOfWeek),
-                  date <= Date() else { continue }
-            count += habits.filter {
-                $0.isScheduled(for: date) && $0.existedOn(date: date) && $0.isCompleted(for: date)
-            }.count
+    /// This week's (completed, due). Fixed-day habits count each due day so far;
+    /// weekly targets count their target once; monthly targets are left out.
+    private var weekProgress: (completed: Int, due: Int) {
+        let calendar = Habit.periodCalendar
+        guard let week = calendar.dateInterval(of: .weekOfYear, for: Date()) else { return (0, 0) }
+        var completed = 0
+        var due = 0
+
+        for habit in habits {
+            if let target = habit.schedule.periodTarget {
+                guard target.period == .week else { continue }
+                completed += min(habit.completedDays(in: week), target.count)
+                due += target.count
+                continue
+            }
+            for dayOffset in 0..<7 {
+                guard let date = calendar.date(byAdding: .day, value: dayOffset, to: week.start),
+                      date <= Date(),
+                      habit.existedOn(date: date),
+                      habit.isScheduled(for: date) else { continue }
+                due += 1
+                if habit.isCompleted(for: date) { completed += 1 }
+            }
         }
-        return count
+        return (completed, due)
     }
 
-    private var weekScheduled: Int {
-        let calendar = Calendar.current
-        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: Date())?.start ?? Date()
-        var count = 0
-        for dayOffset in 0..<7 {
-            guard let date = calendar.date(byAdding: .day, value: dayOffset, to: startOfWeek),
-                  date <= Date() else { continue }
-            count += habits.filter { $0.isScheduled(for: date) && $0.existedOn(date: date) }.count
-        }
-        return count
-    }
-
-    private var bestStreakOverall: Int {
-        habits.map { streakCalculator.calculate(for: $0).best }.max() ?? 0
+    /// Longest best streak across habits, shown with its unit (days, weeks or months)
+    private var bestStreakOverall: String {
+        habits.map { streakCalculator.calculate(for: $0) }
+            .max { $0.best < $1.best }?
+            .bestText ?? "0"
     }
 
     var body: some View {
@@ -63,8 +67,8 @@ struct SteadyFlowProgressView: View {
                     // Summary Cards
                     HStack(spacing: 12) {
                         StatCard(title: "Today", value: "\(todayCompleted)/\(todayScheduled)", icon: "checkmark.circle")
-                        StatCard(title: "This Week", value: "\(weekCompleted)/\(weekScheduled)", icon: "calendar")
-                        StatCard(title: "Best Streak", value: "\(bestStreakOverall)", icon: "flame.fill")
+                        StatCard(title: "This Week", value: "\(weekProgress.completed)/\(weekProgress.due)", icon: "calendar")
+                        StatCard(title: "Best Streak", value: bestStreakOverall, icon: "flame.fill")
                     }
                     .padding(.horizontal)
 
@@ -157,8 +161,13 @@ struct HabitStatRow: View {
         streakCalculator.calculate(for: habit)
     }
     
-    /// Share of scheduled days completed over the last 30 days (including today)
+    /// Share of scheduled days completed over the last 30 days (including today).
+    /// "Times per" habits are measured against their target instead.
     private var completionRate: Int {
+        if let target = habit.schedule.periodTarget {
+            return targetCompletionRate(target)
+        }
+
         let calendar = Calendar.current
         let completed = habit.completedDates
         var scheduledDays = 0
@@ -176,6 +185,30 @@ struct HabitStatRow: View {
 
         guard scheduledDays > 0 else { return 0 }
         return Int((Double(completedDays) / Double(scheduledDays)) * 100)
+    }
+
+    /// Target met over the last 4 finished weeks (or 3 months), capped per period.
+    /// A habit too new to have a finished period is measured on the current one.
+    private func targetCompletionRate(_ target: (period: TargetPeriod, count: Int)) -> Int {
+        let calendar = Habit.periodCalendar
+        let component = target.period.calendarComponent
+        let lookback = target.period == .week ? 4 : 3
+        guard let current = calendar.dateInterval(of: component, for: Date()) else { return 0 }
+        let createdStart = calendar.startOfDay(for: habit.createdAt)
+
+        var periods: [DateInterval] = []
+        var cursor = current.start
+        while periods.count < lookback,
+              let previousDay = calendar.date(byAdding: .day, value: -1, to: cursor),
+              let period = calendar.dateInterval(of: component, for: previousDay),
+              period.end > createdStart {
+            periods.append(period)
+            cursor = period.start
+        }
+        if periods.isEmpty { periods = [current] }
+
+        let done = periods.reduce(0) { $0 + min(habit.completedDays(in: $1), target.count) }
+        return Int(Double(done) / Double(periods.count * target.count) * 100)
     }
     
     private var habitColor: Color {
@@ -213,7 +246,7 @@ struct HabitStatRow: View {
                     Image(systemName: "flame.fill")
                         .font(.caption)
                         .foregroundStyle(DesignSystem.Colors.accentWarm)
-                    Text("\(streak.current)")
+                    Text(streak.currentText)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.primary)
@@ -282,8 +315,8 @@ struct HabitDetailView: View {
 
                 // Stats
                 HStack(spacing: 12) {
-                    StatCard(title: "Current Streak", value: "\(streak.current)", icon: "flame.fill")
-                    StatCard(title: "Best Streak", value: "\(streak.best)", icon: "trophy.fill")
+                    StatCard(title: "Current Streak", value: streak.currentText, icon: "flame.fill")
+                    StatCard(title: "Best Streak", value: streak.bestText, icon: "trophy.fill")
                     StatCard(title: "Total", value: "\(totalCompletions)", icon: "checkmark.circle.fill")
                 }
                 .padding(.horizontal)

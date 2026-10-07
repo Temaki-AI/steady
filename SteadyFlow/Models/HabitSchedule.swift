@@ -25,6 +25,16 @@ enum HabitSchedule: Codable, Hashable {
         }
     }
 
+    /// For "N times per week/month" schedules: the period and how many days in it.
+    /// These habits have no fixed days, so they're judged per period, not per day.
+    var periodTarget: (period: TargetPeriod, count: Int)? {
+        switch self {
+        case .timesPerWeek(let count): return (.week, count)
+        case .timesPerMonth(let count): return (.month, count)
+        default: return nil
+        }
+    }
+
     /// Check if a habit is scheduled for a given date
     func isScheduled(for date: Date, createdAt: Date) -> Bool {
         let calendar = Calendar.current
@@ -49,6 +59,20 @@ enum HabitSchedule: Codable, Hashable {
             let daysSinceCreation = calendar.dateComponents([.day], from: calendar.startOfDay(for: createdAt), to: calendar.startOfDay(for: date)).day ?? 0
             return daysSinceCreation >= 0 && daysSinceCreation % interval == 0
         }
+    }
+}
+
+/// The period a "times per" schedule is measured over
+enum TargetPeriod {
+    case week, month
+
+    var calendarComponent: Calendar.Component {
+        self == .week ? .weekOfYear : .month
+    }
+
+    /// "week" / "month", for labels like "2/3 this week"
+    var name: String {
+        self == .week ? "week" : "month"
     }
 }
 

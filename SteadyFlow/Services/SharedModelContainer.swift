@@ -1,6 +1,11 @@
 import Foundation
 import SwiftData
 
+extension UserDefaults {
+    /// Settings the widget also needs (e.g. week start), stored in the App Group
+    static let shared = UserDefaults(suiteName: SharedModelContainer.appGroupID) ?? .standard
+}
+
 /// Shared ModelContainer that uses App Group storage so both the main app
 /// and widget extension can access the same SwiftData database.
 enum SharedModelContainer {

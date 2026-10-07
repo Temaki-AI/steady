@@ -114,8 +114,8 @@ final class NotificationManager {
         for dayOffset in 0..<daysAhead {
             guard let date = calendar.date(byAdding: .day, value: dayOffset, to: Date()) else { continue }
 
-            // Skip if not scheduled for this day
-            guard habit.isScheduled(for: date) else { continue }
+            // Skip days it isn't due (incl. the rest of a week whose target is already met)
+            guard habit.isDue(on: date) else { continue }
 
             // Skip today if already completed
             if dayOffset == 0 && habit.isCompleted(for: date) { continue }

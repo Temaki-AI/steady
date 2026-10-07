@@ -6,7 +6,7 @@ struct TimeGroupView: View {
     let timeOfDay: TimeOfDay
     let habits: [Habit]
     let date: Date
-    let streaks: [UUID: Int]
+    let streaks: [UUID: StreakCalculator.StreakResult]
     let onToggle: (Habit) -> Void
     let onEdit: (Habit) -> Void
     let onArchive: (Habit) -> Void
@@ -34,9 +34,9 @@ struct TimeGroupView: View {
         }
     }
 
-    /// Habits due on `date`. Unscheduled habits still show (dimmed) but don't count.
+    /// Habits due on `date`. Others still show (dimmed) but don't count.
     private var scheduledHabits: [Habit] {
-        habits.filter { $0.isScheduled(for: date) }
+        habits.filter { $0.isDue(on: date) }
     }
 
     private var completedCount: Int {
@@ -115,7 +115,7 @@ struct TimeGroupView: View {
                         HabitRowView(
                             habit: habit,
                             date: date,
-                            streak: streaks[habit.id] ?? 0,
+                            streak: streaks[habit.id],
                             onToggle: { onToggle(habit) }
                         )
                         .onTapGesture {
