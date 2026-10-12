@@ -112,7 +112,7 @@ enum TimeOfDay: String, Codable, CaseIterable, Comparable {
 
     var icon: String {
         switch self {
-        case .morning: return "sun.rise.fill"
+        case .morning: return "sunrise.fill"
         case .afternoon: return "sun.max.fill"
         case .evening: return "moon.fill"
         case .anytime: return "clock.fill"

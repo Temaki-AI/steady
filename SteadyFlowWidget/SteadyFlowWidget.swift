@@ -42,7 +42,7 @@ struct SteadyFlowTimelineProvider: TimelineProvider {
                 predicate: #Predicate { !$0.isArchived },
                 sortBy: [SortDescriptor(\.position)]
             )
-            let habits = try context.fetch(descriptor)
+            let habits = try context.fetch(descriptor).sorted(by: Habit.displayOrder)
 
             let widgetHabits = habits
                 .filter { $0.isDue(on: day) }

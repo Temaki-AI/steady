@@ -8,6 +8,7 @@
 
 #if DEBUG
 import SwiftUI
+import SwiftData
 
 // MARK: - 1. Today View (Light Mode) — Morning habits partially done
 
@@ -736,4 +737,109 @@ struct ScreenshotMediumWidget: View {
     ScreenshotProgressView()
         .preferredColorScheme(.light)
 }
+// MARK: - Demo Data (real app screenshots)
+
+/// Fills the store with a few months of realistic habits for App Store screenshots.
+/// Launch a Debug build with the argument `-seedDemoData`; it replaces existing data.
+enum DemoData {
+    private struct Spec {
+        let name: String
+        let icon: String
+        let color: HabitColor
+        let schedule: HabitSchedule
+        let timeOfDay: TimeOfDay
+        let rate: Double        // chance of completing an older due day
+        let streak: Int         // due days in a row completed, ending yesterday
+        let doneToday: Bool
+    }
+
+    private static let specs: [Spec] = [
+        Spec(name: "Meditate", icon: "brain.head.profile", color: .indigo, schedule: .daily,
+             timeOfDay: .morning, rate: 0.85, streak: 14, doneToday: true),
+        Spec(name: "Morning run", icon: "figure.run", color: .teal,
+             schedule: .specificDays([.monday, .wednesday, .friday]),
+             timeOfDay: .morning, rate: 0.8, streak: 9, doneToday: true),
+        Spec(name: "Journal", icon: "book.fill", color: .orange, schedule: .daily,
+             timeOfDay: .morning, rate: 0.7, streak: 3, doneToday: false),
+        Spec(name: "Read 30 min", icon: "text.book.closed.fill", color: .blue, schedule: .daily,
+             timeOfDay: .afternoon, rate: 0.85, streak: 21, doneToday: true),
+        Spec(name: "Drink 2L water", icon: "drop.fill", color: .lime, schedule: .daily,
+             timeOfDay: .afternoon, rate: 0.9, streak: 9, doneToday: true),
+        Spec(name: "Strength training", icon: "dumbbell.fill", color: .red, schedule: .timesPerWeek(3),
+             timeOfDay: .anytime, rate: 0.9, streak: 0, doneToday: false),
+        Spec(name: "Stretch", icon: "figure.yoga", color: .green, schedule: .daily,
+             timeOfDay: .evening, rate: 0.75, streak: 5, doneToday: false),
+        Spec(name: "No phone in bed", icon: "moon.fill", color: .purple, schedule: .daily,
+             timeOfDay: .evening, rate: 0.6, streak: 2, doneToday: false),
+    ]
+
+    @MainActor
+    static func seedIfRequested(into context: ModelContext) {
+        guard CommandLine.arguments.contains("-seedDemoData") else { return }
+
+        try? context.delete(model: Completion.self)
+        try? context.delete(model: DailyNote.self)
+        try? context.delete(model: Habit.self)
+
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let historyDays = 120
+
+        // Deterministic so every run produces the same screenshots
+        var state: UInt64 = 0x5EED
+        func roll() -> Double {
+            state = state &* 6364136223846793005 &+ 1442695040888963407
+            return Double(state >> 11) / Double(1 << 53)
+        }
+
+        var positions: [TimeOfDay: Int] = [:]
+        for spec in specs {
+            let position = positions[spec.timeOfDay, default: 0]
+            positions[spec.timeOfDay] = position + 1
+
+            let habit = Habit(name: spec.name, icon: spec.icon, color: spec.color,
+                              schedule: spec.schedule, timeOfDay: spec.timeOfDay, position: position)
+            habit.createdAt = calendar.date(byAdding: .day, value: -historyDays, to: today) ?? today
+            context.insert(habit)
+
+            func complete(_ day: Date) {
+                context.insert(Completion(habit: habit, date: day.addingTimeInterval(9 * 3600)))
+            }
+
+            if spec.schedule.periodTarget != nil {
+                // Weekly target: 3 random days in past weeks, 1 so far this week
+                for weeksAgo in 1...(historyDays / 7) {
+                    guard let weekStart = calendar.date(byAdding: .weekOfYear, value: -weeksAgo, to: today),
+                          let week = calendar.dateInterval(of: .weekOfYear, for: weekStart) else { continue }
+                    let target = roll() < spec.rate ? 3 : 2
+                    let days = (0..<7).map { ($0, roll()) }.sorted { $0.1 < $1.1 }.prefix(target).map(\.0)
+                    for offset in days {
+                        if let day = calendar.date(byAdding: .day, value: offset, to: week.start) { complete(day) }
+                    }
+                }
+                if let yesterday = calendar.date(byAdding: .day, value: -1, to: today) { complete(yesterday) }
+                continue
+            }
+
+            var dueDaysBack = 0
+            for daysAgo in 1...historyDays {
+                guard let day = calendar.date(byAdding: .day, value: -daysAgo, to: today),
+                      habit.isScheduled(for: day) else { continue }
+                dueDaysBack += 1
+                if dueDaysBack <= spec.streak {
+                    complete(day)
+                } else if dueDaysBack == spec.streak + 1 {
+                    continue // the miss that started the current streak
+                } else if roll() < spec.rate {
+                    complete(day)
+                }
+            }
+            if spec.doneToday { complete(today) }
+        }
+
+        context.insert(DailyNote(date: today, text: "Slept well. Short run before work felt great."))
+        try? context.save()
+    }
+}
+
 #endif

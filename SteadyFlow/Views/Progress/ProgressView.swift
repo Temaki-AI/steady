@@ -91,7 +91,7 @@ struct SteadyFlowProgressView: View {
                             .foregroundStyle(.primary)
                             .padding(.horizontal)
 
-                        ForEach(habits) { habit in
+                        ForEach(habits.sorted(by: Habit.displayOrder)) { habit in
                             NavigationLink {
                                 HabitDetailView(habit: habit)
                             } label: {

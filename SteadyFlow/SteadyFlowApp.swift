@@ -84,6 +84,9 @@ struct ContentView: View {
             }
         }
         .tint(accentColor)
+        #if DEBUG
+        .task { DemoData.seedIfRequested(into: modelContext) }
+        #endif
         .alert("Your habits couldn't be loaded", isPresented: $showStorageAlert) {
             Button("OK", role: .cancel) {}
         } message: {

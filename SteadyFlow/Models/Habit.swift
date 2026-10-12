@@ -168,6 +168,13 @@ final class Habit {
         return safeCompletions.first { $0.date == dateString }
     }
 
+    /// Display order everywhere habits are listed together: by time of day
+    /// (morning first), then by position within that group
+    static func displayOrder(_ lhs: Habit, _ rhs: Habit) -> Bool {
+        if lhs.timeOfDay != rhs.timeOfDay { return lhs.timeOfDay < rhs.timeOfDay }
+        return lhs.position < rhs.position
+    }
+
     /// Whether the habit existed on a given date
     func existedOn(date: Date) -> Bool {
         Calendar.current.startOfDay(for: date) >= Calendar.current.startOfDay(for: createdAt)
