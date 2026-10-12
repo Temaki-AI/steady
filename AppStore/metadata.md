@@ -65,4 +65,4 @@ Data Not Collected
 Free
 
 ## Copyright
-(needed from you)
+© 2026 Fernando Amaral
